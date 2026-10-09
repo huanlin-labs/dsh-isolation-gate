@@ -1,0 +1,37 @@
+# dsh-access-gate bundle patch
+#
+# 挂上本插件的 loader 行。两个半边：
+#
+#   · 宿主半（lib/index.js）—— 本机 HTTP 路由 /__dsh-access-gate/*：
+#       GET  /__dsh-access-gate/ping     插件身份 + 三级说明
+#       GET  /__dsh-access-gate/state    名单 / 级别 / 磁盘差异 / 审计尾部 / agent 策略行
+#       POST /__dsh-access-gate/level    改一个受管对象的三级授权（写状态文件）
+#       POST /__dsh-access-gate/roster   名单增删（**先备份**，新增项自动建 deny）
+#       POST /__dsh-access-gate/check    受管辖通道判定（不读任何内容）
+#       GET  /__dsh-access-gate/log      最近审计
+#     它只读写两个配置文件（状态 JSON / 名单 TXT）、列出盘根**一层目录名**，
+#     并对名单里**显式列出的路径**做一次存在性判定；受管对象内部内容的读写全部在
+#     bin/gate.mjs 那条受管辖通道里，同样由本插件判定。
+#
+#   · 客户端半（lib/client.js，经 package.json 的 dsh.client 声明）—— 通过框架官方
+#     `slots` 服务挂两个座位（与官方「插件」「自动化任务」页同一个扩展点）：
+#       1. 左上应用级导航排 `sidebar.panellist`（root 作用域 **list**）→ 图标行，
+#          `order: 6` —— 官方「插件」= 0、「自动化任务」= 10、已装的「技能」= 5，
+#          因此 6 正好落在**「技能」正下方**（外壳按 order 升序排，与加载先后无关）。
+#       2. 主区 `main`（root 作用域 **keyed**）→ 整页，key 同行 id：`access-gate`。
+#     因此本包**不声明任何 @deepseek-ai/dsh\* peer 依赖**（它从不 import 它们；
+#     `slots` 是经 ctx.inject 来的运行时服务）⇒ 不受 DSH 兼容性豁免闸门影响。
+#
+# 装配方式（**归管家域**，本卡不动 profile）——二者取一：
+#   (a) 在 profile 的 dsh.profile.bundles 列表里加 "dsh-access-gate"；或
+#   (b) 用用户 patch 层插同一行：
+#
+#   - insert:
+#       - id: access-gate
+#         name: 'dsh-access-gate'
+#
+# `name` 就是 npm 包名；loader 从 profile 的 node_modules 里解析它。
+
+- insert:
+    - id: access-gate
+      name: 'dsh-access-gate'

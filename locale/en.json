@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Access Gate",
+    "description": "Access gate for directories: adds a '门禁' entry right below 'Skills' in the app-level nav row (official sidebar.panellist seat, order 6), diffs the managed roster (D:\\.agents\\门禁-名单.txt — one managed object per line: a top-level directory name under D:\\ or any absolute path) against the disk, toggles each object between three levels (deny / read / full), and persists the state to D:\\.agents\\门禁-授权.json for agents and tools to read. Paths match by longest path-segment prefix; a missing or corrupt roster makes the gate deny everything (fail-closed). Roster edits only land after the owner presses the button in the panel, and the file is backed up first."
+  }
+}
