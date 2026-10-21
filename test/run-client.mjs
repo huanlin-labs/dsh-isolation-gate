@@ -256,7 +256,10 @@ check('行级分段控件存在（scope=row:Zcode）', tree.nodes.some((node) =>
 check('行内不再直接堆三个独立按钮，而是分段控件', tree.nodes.filter((node) => node.type === 'button' && node.props?.['data-gate-segmented'] === undefined).length >= 0);
 check('每行有 ⋯ 菜单按钮（3 行）', tree.nodes.filter((node) => node.type === 'button' && node.props?.children === '⋯').length >= 4, String(tree.nodes.filter((node) => node.type === 'button' && node.props?.children === '⋯').length));
 check('添加条：选择文件夹按钮', tree.flat.includes('选择文件夹'));
-check('添加条：路径输入提示', tree.nodes.some((node) => typeof node.props?.placeholder === 'string' && node.props.placeholder.includes('或输入绝对路径')));
+check('添加条：路径输入提示', tree.nodes.some((node) => typeof node.props?.placeholder === 'string' && node.props.placeholder.includes('输入绝对路径')));
+const noPickerTree = renderTree(GateView({ ...handlers, model: { ...fixture, features: { ...fixture.features, picker: false } } }));
+check('无系统选择器时改为「浏览目录」（不再是死按钮）', noPickerTree.nodes.some((node) => node.props?.className === 'gate-browse') && noPickerTree.flat.includes('浏览目录') && !noPickerTree.flat.includes('选择文件夹'));
+check('「浏览目录」里能看到一层目录候选', noPickerTree.flat.includes('浏览目录 ▾') && noPickerTree.nodes.some((node) => node.type === 'button' && node.props?.['data-gate-browse-item'] === undefined));
 check('未入名单目录给「加入名单」按钮', tree.flat.includes('加入名单'));
 check('受管辖通道的读法写在页面上（bin\\gate.mjs status）', tree.flat.includes('bin\\gate.mjs status'));
 check('判定示例里给出 --path 用法', tree.flat.includes('--path'));
