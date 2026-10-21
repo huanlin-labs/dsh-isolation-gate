@@ -1,6 +1,6 @@
 # 发布清单 · dsh-isolation-gate
 
-> 状态：**已就绪 5/7**，剩 2 项需户主参与（见「待办」）。
+> 状态：**已上架 npm（0.2.0 live，2026-10-21）**；剩 1 项：分组卡片截图。
 
 ## 已完成
 - [x] **包名可用**：`dsh-isolation-gate` 在 npm 上未被占用（`dsh-access-gate` 已被他人占用，故改名）。
@@ -15,7 +15,7 @@
 - [ ] **截图**：`docs/screenshots/02-group.png`（分组卡片 + 拖拽归组），补进 README 图示。DSH 窗口内的点击/截图由户主做。
 - [ ] **干净环境实装**：在一台干净机器 / 空 profile 上跑一次
       `dsh plugin --profile desktop add dsh-isolation-gate`（或先用本地 tarball `npm pack` 后 `add ./dsh-isolation-gate-0.2.0.tgz`），确认「设置 → 插件」里显示为已启用、左排出现「门禁」。
-- [ ] 发布：`npm publish`（首次会占名，建议先 `--dry-run` 再看一遍 `npm pack` 内容）。
+- [x] 发布：`npm publish` 成功；`dist-tags.latest = 0.2.0`，tarball 200。\n- [x] 干净安装冒烟：`npm i dsh-isolation-gate` → 0.2.0，`import` 得 `name=dsh-isolation-gate`、`apply=function`，`gate` CLI 可执行。
 
 ## 发布后第一批
 - 临时授权（限时 N 分钟自动回收）
