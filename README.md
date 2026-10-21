@@ -5,6 +5,8 @@
 
 **English** · [README.en.md](./README.en.md)
 
+![门禁总览](docs/screenshots/01-overview.png)
+
 ---
 
 ## 这是什么（以及不是什么）
