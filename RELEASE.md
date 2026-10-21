@@ -25,7 +25,7 @@
 ---
 配套：`README.md`（中文）· `README.en.md`（English）· 状态文件 `D:\.agents\门禁-授权.json` · 名单 `D:\.agents\门禁-名单.txt`
 
-## GitHub（待回家后做，约 3 分钟）
+## GitHub（2026-10-21 已完成）
 
 前置：`gh` 已装（2.101.0），但**未登录**（无 remote、无凭证）。
 
@@ -41,3 +41,5 @@ gh repo edit --add-topic dsh,dsh-plugin,isolation,permissions,authorization
 #    package.json: repository/homepage/bugs → github.com/zhaorui-wu/dsh-isolation-gate
 ```
 配好 GitHub 后可接 **trusted publishing（OIDC）**，以后发版免 2FA。
+**结果**：<https://github.com/zhaorui-wu/dsh-isolation-gate>（public，main，topics: dsh/dsh-plugin/isolation/permissions/authorization）。
+⚠️ 遗留：GitHub Actions 未注册该 workflow（ctions/workflows 返回 0），待查（疑账号级 Actions 或仓库标记问题）。
