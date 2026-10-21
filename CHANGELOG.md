@@ -1,3 +1,14 @@
+# Changelog
+
+## 0.2.1 — 2026-10-21
+
+只改元数据，无行为变更。
+
+- `package.json` 补 `repository` / `homepage` / `bugs`，npm 页面回链 GitHub
+- 关键词补充 `agent-safety` / `access-control` / `windows`
+- README 重写首屏：横幅、徽章、Star CTA、路线图、参与入口
+- 补齐开源配套：CONTRIBUTING / SECURITY / CODE_OF_CONDUCT / Issue 与 PR 模板
+- CI 拆成 ubuntu 语法检查 + windows 功能自测
 # 变更记录 · dsh-isolation-gate
 
 > 本包原名 `dsh-access-gate`（npm 上该名已被他人占用，与本插件无关系）。

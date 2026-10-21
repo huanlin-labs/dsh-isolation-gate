@@ -1,13 +1,24 @@
+<p align="center"><img src="docs/banner.svg" alt="门禁 · dsh-isolation-gate" width="100%"></p>
+
 # 门禁 · dsh-isolation-gate
 
-[![npm](https://img.shields.io/npm/v/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate) [![GitHub](https://img.shields.io/badge/GitHub-zhaorui--wu%2Fdsh--isolation--gate-blue.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate)
+[![npm version](https://img.shields.io/npm/v/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate)
+[![GitHub stars](https://img.shields.io/github/stars/zhaorui-wu/dsh-isolation-gate.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate/stargazers)
+[![license](https://img.shields.io/npm/l/dsh-isolation-gate.svg)](./LICENSE)
+[![CI](https://github.com/zhaorui-wu/dsh-isolation-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate/actions/workflows/ci.yml)
+[![node](https://img.shields.io/node/v/dsh-isolation-gate.svg)](https://nodejs.org)
 
-> **npm**：<https://www.npmjs.com/package/dsh-isolation-gate> · 安装：`dsh plugin --profile desktop add dsh-isolation-gate`
+**给 DeepSeek Harness（DSH）的隔离区授权台：默认禁、名单制、点一下生效、可审计、agent 自己能查。**
 
-> 给 DeepSeek Harness（DSH）的**隔离区授权台**：一屏看清「这台机器上哪些目录受管、各自什么级别」，
-> 点一下就生效 —— **默认禁**、**名单制**、**分组批量切**、**可审计**、**agent 自己能查**。
+[安装](#安装) · [功能](#功能) · [它拦在哪一层](#它拦在哪一层) · [CLI](#命令行--agent-自查) · [English](./README.en.md) · [更新日志](./CHANGELOG.md)
 
-**English** · [README.en.md](./README.en.md)
+```bash
+dsh plugin --profile desktop add dsh-isolation-gate
+```
+
+> ⭐ **如果它帮你少踩一次坑，点个 Star 能让更多人找到它** —— 这是这个项目唯一的「传播预算」。
+> [![Star](https://img.shields.io/github/stars/zhaorui-wu/dsh-isolation-gate?style=social)](https://github.com/zhaorui-wu/dsh-isolation-gate)
 
 ![门禁总览](docs/screenshots/01-overview.png)
 
@@ -206,7 +217,7 @@ node bin/gate.mjs log    --limit 20
 ## 自测
 
 ```bash
-node test/run-all.mjs     # 4 个套件 · 309 断言 · 全离线（不需要 GUI/dsh）
+node test/run-all.mjs     # 4 个套件 · 325 断言 · 全离线（不需要 GUI/dsh）
 node --check lib/*.js
 ```
 
@@ -228,3 +239,41 @@ node --check lib/*.js
 ## 许可
 
 MIT · 见 [LICENSE](./LICENSE)。
+
+
+---
+
+## 路线图
+
+**已在做 / 下一步**
+
+- [ ] 分组卡片截图与 30 秒演示 GIF（欢迎贡献录屏）
+- [ ] `gate export --csv`：把审计日志导出成表格
+- [ ] 临时授权：给某对象一个到期时间，到点自动回到 `deny`
+- [ ] 状态文件并发锁（多窗口同时改不互相覆盖）
+- [ ] 拒绝原因解释器：告诉模型「是哪条规则、哪段路径命中的」
+
+**明确不做**
+
+- ❌ 内核级沙箱（该交给 Windows ACL / VM）
+- ❌ 云端同步 / 账号体系（本插件只认本机状态文件）
+
+有想法请开 [Issue](https://github.com/zhaorui-wu/dsh-isolation-gate/issues)，说清处境比说清方案更有用。
+
+---
+
+## 参与
+
+- 装不上 / 不会配 → [Discussions](https://github.com/zhaorui-wu/dsh-isolation-gate/discussions)
+- 有 Bug → [Bug 报告](https://github.com/zhaorui-wu/dsh-isolation-gate/issues/new?template=bug_report.yml)
+- 想加功能 → [功能建议](https://github.com/zhaorui-wu/dsh-isolation-gate/issues/new?template=feature_request.yml)
+- 改代码 → [CONTRIBUTING.md](./CONTRIBUTING.md)（`npm test` 全绿即可提 PR）
+- 安全问题 → [SECURITY.md](./SECURITY.md)（不要开公开 Issue）
+
+## Star
+
+如果这个插件帮你避免了一次误删、少配了一次 ACL、或者只是让你看清了「哪些目录其实一直开着」——
+
+**点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
+
+[![Star History Chart](https://api.star-history.com/svg?repos=zhaorui-wu/dsh-isolation-gate&type=Date)](https://star-history.com/#zhaorui-wu/dsh-isolation-gate&Date)

@@ -1,0 +1,23 @@
+name: 功能建议
+description: 想要一个新能力，或现有行为想改
+title: "[feat] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你遇到的问题
+      description: 先说处境，再说你想要的解法。
+      placeholder: "我在管 20 个目录，每次都要一个个点……"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你希望的方案
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 你试过的替代办法（可选）

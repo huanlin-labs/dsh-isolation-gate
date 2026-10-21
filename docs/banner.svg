@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="门禁 · dsh-isolation-gate">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.55" stop-color="#101a2e"/>
+      <stop offset="1" stop-color="#1a1030"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.5" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="320" fill="url(#bg)"/>
+  <g opacity="0.18" stroke="#94a3b8" stroke-width="1">
+    <path d="M0 80h1200M0 160h1200M0 240h1200"/>
+    <path d="M200 0v320M400 0v320M600 0v320M800 0v320M1000 0v320"/>
+  </g>
+  <g transform="translate(80,92)">
+    <rect x="0" y="0" width="96" height="96" rx="22" fill="#0f172a" stroke="url(#accent)" stroke-width="3"/>
+    <path d="M30 52V40a18 18 0 0 1 36 0v12" fill="none" stroke="#5eead4" stroke-width="6" stroke-linecap="round"/>
+    <rect x="24" y="52" width="48" height="30" rx="7" fill="#5eead4"/>
+    <circle cx="48" cy="66" r="4" fill="#0b1220"/>
+  </g>
+  <text x="208" y="132" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="46" font-weight="700" fill="#f8fafc">门禁 · dsh-isolation-gate</text>
+  <text x="208" y="176" font-family="Segoe UI, PingFang SC, Microsoft YaHei, sans-serif" font-size="22" fill="#94a3b8">默认禁 · 名单制 · 分组批量 · 可审计 · agent 自查</text>
+  <g font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="17">
+    <rect x="208" y="204" width="120" height="36" rx="18" fill="#0f172a" stroke="#334155"/>
+    <text x="268" y="228" text-anchor="middle" fill="#e2e8f0">deny</text>
+    <rect x="340" y="204" width="120" height="36" rx="18" fill="#0f172a" stroke="#334155"/>
+    <text x="400" y="228" text-anchor="middle" fill="#e2e8f0">read</text>
+    <rect x="472" y="204" width="120" height="36" rx="18" fill="#0f172a" stroke="#334155"/>
+    <text x="532" y="228" text-anchor="middle" fill="#e2e8f0">full</text>
+  </g>
+  <text x="1120" y="286" text-anchor="end" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="16" fill="#64748b">for DeepSeek Harness</text>
+</svg>

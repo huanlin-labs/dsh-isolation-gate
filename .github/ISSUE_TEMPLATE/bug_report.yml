@@ -1,0 +1,54 @@
+name: Bug 报告
+description: 有东西不对：判定错了、面板不响应、装不上
+title: "[bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先把这三件事说清楚，能省好几轮来回：
+        1. **期望什么** 2. **实际什么** 3. **怎么复现**
+        ⚠️ 安全漏洞不要在这里发，见 SECURITY.md。
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: "`dsh-isolation-gate` 版本（npm 或 package.json）"
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: dsh
+    attributes:
+      label: DSH 版本 / 平台
+      placeholder: "DSH 0.2.0-rc.2 · Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: expect
+    attributes:
+      label: 期望发生什么
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际发生什么
+      description: 有报错就把原文贴上；面板问题请贴截图。
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开「门禁」页
+        2. 把 X 设为「只读」
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: gate-status
+    attributes:
+      label: "`node bin/gate.mjs status` 输出（可选）"
+      render: text
