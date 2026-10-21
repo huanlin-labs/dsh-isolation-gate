@@ -24,3 +24,20 @@
 
 ---
 配套：`README.md`（中文）· `README.en.md`（English）· 状态文件 `D:\.agents\门禁-授权.json` · 名单 `D:\.agents\门禁-名单.txt`
+
+## GitHub（待回家后做，约 3 分钟）
+
+前置：`gh` 已装（2.101.0），但**未登录**（无 remote、无凭证）。
+
+```powershell
+# 1) 登录（浏览器输 8 位码）
+gh auth login --hostname github.com --git-protocol https --web
+# 2) 建仓并推送
+cd D:\插件\dsh-isolation-gate
+gh repo create zhaorui-wu/dsh-isolation-gate --public --source=. --remote=origin --push `
+  --description "DSH plugin: default-deny directory authorization desk (isolation gate) with roster, groups, audit and agent self-check"
+gh repo edit --add-topic dsh,dsh-plugin,isolation,permissions,authorization
+# 3) 回填元数据（下次发版生效）
+#    package.json: repository/homepage/bugs → github.com/zhaorui-wu/dsh-isolation-gate
+```
+配好 GitHub 后可接 **trusted publishing（OIDC）**，以后发版免 2FA。
