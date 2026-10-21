@@ -226,6 +226,7 @@ const handlers = {
   onGroupText: (value) => clicks.push(['groupText', value]),
   onApplyGroup: (name) => clicks.push(['applyGroup', name]),
   onDeleteGroup: (group) => clicks.push(['deleteGroup', group]),
+  onDropToGroup: (name, group) => clicks.push(['dropToGroup', name, group]),
   onToggleNewGroup: () => clicks.push(['toggleNewGroup']),
   onNewGroupName: (value) => clicks.push(['newGroupName', value]),
   onNewGroupNote: (value) => clicks.push(['newGroupNote', value]),
@@ -255,6 +256,18 @@ check('两类都显示"目录存在/不存在"徽标', tree.flat.includes('目�
 check('三级文案都在（禁 / 只读 / 可读写删）', tree.flat.includes('禁') && tree.flat.includes('只读') && tree.flat.includes('可读写删'));
 check('分组卡片渲染出来（data-gate-group）', tree.nodes.some((node) => node.props?.['data-gate-group'] === 'harness 隔离'));
 check('组头显示成员数与"组内统一"', tree.flat.includes('1 个') && tree.flat.includes('组内统一'));
+
+// ---- 拖拽归组（与技能面板同款 HTML5 DnD） ----
+const fakeDrop = (name) => ({ preventDefault() {}, dataTransfer: { getData: () => name }, currentTarget: { style: {} } });
+check('对象行可拖动（draggable）', tree.nodes.some((node) => node.props?.['data-gate-draggable'] === 'true'));
+const groupCardNode = tree.nodes.find((node) => node.props?.['data-gate-group'] === 'harness 隔离');
+check('组卡片可接收拖放（onDrop 已接线）', typeof groupCardNode?.props?.onDrop === 'function');
+groupCardNode?.props?.onDrop?.(fakeDrop('Zcode'));
+check('拖 Zcode 进组 → onDropToGroup(Zcode, harness 隔离)', JSON.stringify(clicks.at(-1)) === JSON.stringify(['dropToGroup', 'Zcode', 'harness 隔离']), JSON.stringify(clicks.at(-1)));
+const ungroupedZone = tree.nodes.find((node) => node.props?.['data-gate-drop'] === 'ungrouped');
+check('「未分组」区可作为拖出组的落点', typeof ungroupedZone?.props?.onDrop === 'function');
+ungroupedZone?.props?.onDrop?.(fakeDrop('Zcode'));
+check('拖到未分组 → onDropToGroup(Zcode, 空组)', JSON.stringify(clicks.at(-1)) === JSON.stringify(['dropToGroup', 'Zcode', '']), JSON.stringify(clicks.at(-1)));
 check('组级分段控件存在（scope=group:harness 隔离）', tree.nodes.some((node) => node.props?.['data-gate-segmented'] === 'group:harness 隔离'));
 check('行级分段控件存在（scope=row:Zcode）', tree.nodes.some((node) => node.props?.['data-gate-segmented'] === 'row:Zcode'));
 check('行内不再直接堆三个独立按钮，而是分段控件', tree.nodes.filter((node) => node.type === 'button' && node.props?.['data-gate-segmented'] === undefined).length >= 0);
