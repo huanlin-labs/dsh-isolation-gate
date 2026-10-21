@@ -2,25 +2,25 @@ name: ci
 
 on:
   push:
-    branches: [master, main]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
 jobs:
-  self-test:
+  syntax:
+    name: syntax (ubuntu)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20.11'
-      - name: Syntax check (host + client halves, library modules)
+      - name: node --check
         run: |
-          for f in lib/*.js; do node --check "$f"; done
-          node --check test/run-all.mjs
-      - name: Self-test suites
-        run: node test/run-all.mjs
-  self-test-windows:
+          for f in lib/*.js bin/*.mjs test/*.mjs; do node --check "$f"; done
+
+  self-test:
+    name: self-test (windows)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
