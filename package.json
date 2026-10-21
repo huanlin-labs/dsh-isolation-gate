@@ -1,16 +1,17 @@
 {
   "name": "dsh-access-gate",
-  "version": "0.1.0",
-  "description": "门禁 · 目录访问管制：在左上应用级导航排「技能」正下方加一个「门禁」入口（官方 slots 座位 sidebar.panellist，order 6），把受管名单（D:\\.agents\\门禁-名单.txt —— 一行一个受管对象：D 根一级目录【名字】或【任意绝对路径】）与磁盘比对并标出差异，逐个受管对象切换三级授权（禁 / 只读 / 可读写删），状态持久化到 D:\\.agents\\门禁-授权.json 供 agent/工具侧读取；判定按「路径段最长前缀」命中（名字键与路径键互不混淆），名单读不到时一律拒绝（fail-closed）；名单增删只在界面里给出差异并经户主点击后落盘（改前先备份）。",
+  "version": "0.2.0",
+  "description": "门禁 · 目录访问管制（隔离区授权台）：一屏管理「哪些目录受管、各自什么级别」，三级=禁/只读/可读写删；判定同时挂在受管辖通道（bin/gate.mjs）与宿主工具执行门（ctx.tools.guard）上，默认禁、名单缺失一律拒绝（fail-closed）、审计可查、agent 可自查；支持分组批量切、目录选择器与状态文件自动迁移。",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "dsh-bundle",
     "access-gate",
+    "permissions",
     "isolation",
     "authorization",
-    "panellist",
-    "access-gate"
+    "sandbox",
+    "panellist"
   ],
   "license": "MIT",
   "type": "module",
@@ -34,7 +35,10 @@
     "locale",
     "test",
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "docs"
   ],
   "engines": {
     "node": ">=20.11"

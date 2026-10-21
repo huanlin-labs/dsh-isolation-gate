@@ -49,7 +49,15 @@ const fakeWebServer = {
     return () => {};
   },
 };
+const guards = [];
+const fakeTools = {
+  guard(fn) {
+    guards.push(fn);
+    return () => {};
+  },
+};
 const ctx = {
+  tools: fakeTools,
   effect(callback) {
     const disposer = callback();
     return () => {
@@ -58,7 +66,8 @@ const ctx = {
   },
   get(service) {
     log.push(`ctx.get('${service}')`);
-    return service === 'webServer' ? fakeWebServer : undefined;
+    if (service === 'webServer') return fakeWebServer;
+    return undefined;
   },
   inject(names, callback) {
     log.push(`ctx.inject(${JSON.stringify(names)})`);
@@ -69,11 +78,11 @@ const ctx = {
 apply(ctx, { statePath, rosterPath, auditPath, backupDir, root: `${scanRoot}\\` });
 
 check('导出 name = dsh-access-gate', name === 'dsh-access-gate', name);
-check('inject 为空数组（不猜、不探服务）', Array.isArray(inject) && inject.length === 0, JSON.stringify(inject));
-check('注册了 6 条路由', registered.length === 6, registered.map((row) => row.path).join(' '));
+check('inject 为空数组（不猜、不探服务）', JSON.stringify(inject) === '["tools"]', JSON.stringify(inject));
+check('注册了 6 条路由', registered.length === 11, registered.map((row) => row.path).join(' '));
 check('路由前缀已改名（/__dsh-access-gate/*）', registered.every((row) => row.path.startsWith('/__dsh-access-gate/')), registered.map((row) => row.path).join(' '));
 check('每条路由都是 kind=exact', registered.every((row) => row.kind === 'exact'));
-check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')")), log.join(' '));
+check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPickerController')")), log.join(' '));
 
 // ---- 假 http --------------------------------------------------------------
 function makeRes() {
@@ -132,7 +141,7 @@ const BASE = '/__dsh-access-gate';
 try {
   const ping = await hit(`${BASE}/ping`);
   check('GET ping → 200', ping.status === 200, String(ping.status));
-  check('ping 报出 6 条路由', Array.isArray(ping.json?.routes) && ping.json.routes.length === 6);
+  check('ping 报出 6 条路由', Array.isArray(ping.json?.routes) && ping.json.routes.length === 11);
   check('ping 报出三级说明', Array.isArray(ping.json?.table) && ping.json.table.length === 3, JSON.stringify(ping.json?.levels));
   check('ping 报出受管辖通道名（dsh-access-gate/bin/gate.mjs）', ping.json?.guardChannel === 'dsh-access-gate/bin/gate.mjs', ping.json?.guardChannel);
   check('apply() 本身不写盘（状态文件此刻还不存在）', !existsSync(statePath), 'apply 无副作用');
@@ -142,7 +151,7 @@ try {
   check('首次读取状态时按默认建出状态文件（全禁）', existsSync(statePath));
   {
     const raw = JSON.parse(readFileSync(statePath, 'utf8'));
-    check('新建的状态文件里没有任何授权条目', Object.keys(raw.harnesses ?? {}).length === 0);
+    check('新建的状态文件里没有任何授权条目', Object.keys(raw.objects ?? {}).length === 0);
   }
   check('state 列出盘根一层目录（含 Zcode / pi）', state.json?.allRootDirs?.includes('Zcode') === true && state.json?.allRootDirs?.includes('pi') === true, (state.json?.allRootDirs ?? []).join(','));
   check('state 认出「疑似受管目录未入名单」= pi', (state.json?.diffs?.dirNotListedSuspect ?? []).includes('pi'), JSON.stringify(state.json?.diffs?.dirNotListedSuspect));
@@ -170,8 +179,8 @@ try {
   const persisted = JSON.parse(readFileSync(statePath, 'utf8'));
   check(
     '级别已落盘（= 重启后仍在）',
-    Object.values(persisted.harnesses).some((cell) => cell.level === 'read'),
-    JSON.stringify(persisted.harnesses),
+    Object.values(persisted.objects).some((cell) => cell.level === 'read'),
+    JSON.stringify(persisted.objects),
   );
   check('落盘状态无 BOM', readFileSync(statePath)[0] !== 0xef);
 
@@ -256,6 +265,40 @@ try {
   check('本机 Origin → 200', local.status === 200, String(local.status));
 
   // ---- fail-closed：名单不可用 ⇒ 报告标出 gateClosed，判定一律拒绝 ----
+  // ---- 2026-10-21：分组 / 组级一键切 / 孤儿清理 / 工具门干跑 / 原生选择器 ----
+  check('工具门已挂载（ctx.tools.guard 一次）', guards.length === 1, String(guards.length));
+  const guardRead = guards[0]({ name: 'read', arguments: { path: join(deepDir, 'a.txt') } });
+  check('工具门：read 级下读文件放行', guardRead === undefined, String(guardRead));
+  const guardWrite = guards[0]({ name: 'write', arguments: { path: join(deepDir, 'a.txt') } });
+  check('工具门：read 级下写文件被拒（文案含门禁）', typeof guardWrite === 'string' && guardWrite.includes('门禁'), guardWrite);
+  const guardShell = guards[0]({ name: 'bash', arguments: { command: 'rm -rf "' + deepDir + '"' } });
+  check('工具门：shell 删除受管路径被拒', typeof guardShell === 'string' && guardShell.includes('门禁'), guardShell);
+
+  await hit(`${BASE}/roster`, { method: 'POST', body: { action: 'add', name: 'pi' } });
+  const assign = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'assign', name: 'pi', group: 'harness 隔离' } });
+  check('POST group assign → 200 且回组名', assign.status === 200 && assign.json?.group === 'harness 隔离', JSON.stringify(assign.json?.group));
+  const withGroup = await hit(`${BASE}/state`);
+  check('state 报出分组（含成员数）', (withGroup.json?.groups ?? []).some((g) => g.name === 'harness 隔离' && g.count === 1), JSON.stringify(withGroup.json?.groups));
+  const groupLevel = await hit(`${BASE}/group-level`, { method: 'POST', body: { group: 'harness 隔离', level: 'full' } });
+  check('POST group-level → 200 且报 count=1', groupLevel.status === 200 && groupLevel.json?.count === 1, JSON.stringify(groupLevel.json?.count));
+  check('组级切换已落盘（pi = full）', groupLevel.json?.report?.roster?.find((r) => r.name === 'pi')?.level === 'full');
+  const persistedGroup = JSON.parse(readFileSync(statePath, 'utf8'));
+  check('状态文件 v2：groups/objects 落盘', persistedGroup.version === 2 && Boolean(persistedGroup.groups?.['harness 隔离']) && persistedGroup.objects?.pi?.group === 'harness 隔离', JSON.stringify(Object.keys(persistedGroup)));
+  const delGroup = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'delete', group: 'harness 隔离' } });
+  check('POST group delete → 200 且成员保留', delGroup.status === 200 && Array.isArray(delGroup.json?.released) && delGroup.json.released.includes('pi'), JSON.stringify(delGroup.json?.released));
+
+  const orphanLevel = await hit(`${BASE}/level`, { method: 'POST', body: { name: 'steam', level: 'read' } });
+  check('给名单外对象设级别 → 200（成为孤儿键）', orphanLevel.status === 200);
+  const pruned = await hit(`${BASE}/prune`, { method: 'POST', body: {} });
+  check('POST prune → 200 且清掉 steam', pruned.status === 200 && (pruned.json?.removed ?? []).includes('steam'), JSON.stringify(pruned.json?.removed));
+
+  const dry = await hit(`${BASE}/toolcheck`, { method: 'POST', body: { tool: 'write', args: { path: join(deepDir, 'a.txt') } } });
+  check('POST toolcheck（写）→ wouldDeny=true', dry.status === 200 && dry.json?.wouldDeny === true, JSON.stringify({ deny: dry.json?.wouldDeny, targets: dry.json?.targets?.length }));
+  const dryRead = await hit(`${BASE}/toolcheck`, { method: 'POST', body: { tool: 'read', args: { path: join(deepDir, 'a.txt') } } });
+  check('POST toolcheck（读）→ wouldDeny=false', dryRead.status === 200 && dryRead.json?.wouldDeny === false);
+  const pick = await hit(`${BASE}/pick`, { method: 'POST', body: {} });
+  check('POST pick（宿主无选择器）→ 400 且给出退路提示', pick.status === 400 && /未入名单目录|手动输入/.test(pick.json?.error ?? ''), pick.json?.error);
+
   const closedRosterPath = join(root, '不存在的名单.txt');
   const registered2 = [];
   const fakeWebServer2 = {
@@ -267,6 +310,7 @@ try {
   apply(
     {
       effect: (callback) => callback(),
+      tools: fakeTools,
       get: (service) => (service === 'webServer' ? fakeWebServer2 : undefined),
       inject: () => () => {},
     },
@@ -294,6 +338,7 @@ try {
   // 「没有 webServer」的 profile：应走 ctx.inject 等待，而不是挂死
   const waited = [];
   const ctxNoWeb = {
+    tools: fakeTools,
     effect(callback) {
       callback();
       return () => {};
