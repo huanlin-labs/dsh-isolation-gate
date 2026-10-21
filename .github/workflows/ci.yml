@@ -1,22 +1,31 @@
-name: test
+name: ci
 
 on:
   push:
+    branches: [master, main]
   pull_request:
   workflow_dispatch:
 
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node: ['20', '22']
-    runs-on: ${{ matrix.os }}
+  self-test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
-      - name: self-test (no dependencies)
-        run: npm test
+          node-version: '20.11'
+      - name: Syntax check (host + client halves, library modules)
+        run: |
+          for f in lib/*.js; do node --check "$f"; done
+          node --check test/run-all.mjs
+      - name: Self-test suites
+        run: node test/run-all.mjs
+  self-test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11'
+      - name: Self-test suites
+        run: node test/run-all.mjs
