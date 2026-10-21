@@ -82,7 +82,7 @@ check('inject 为空数组（不猜、不探服务）', JSON.stringify(inject) =
 check('注册了 6 条路由', registered.length === 11, registered.map((row) => row.path).join(' '));
 check('路由前缀已改名（/__dsh-access-gate/*）', registered.every((row) => row.path.startsWith('/__dsh-access-gate/')), registered.map((row) => row.path).join(' '));
 check('每条路由都是 kind=exact', registered.every((row) => row.kind === 'exact'));
-check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPickerController')")), log.join(' '));
+check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPicker')")), log.join(' '));
 
 // ---- 假 http --------------------------------------------------------------
 function makeRes() {
