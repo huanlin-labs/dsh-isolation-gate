@@ -291,6 +291,19 @@ try {
   const delGroup = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'delete', group: 'harness 隔离' } });
   check('POST group delete → 200 且成员保留', delGroup.status === 200 && Array.isArray(delGroup.json?.released) && delGroup.json.released.includes('pi'), JSON.stringify(delGroup.json?.released));
 
+  const newGroup = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'create', group: '空组试验', note: '还没成员' } });
+  check('POST group create → 200 且回组名', newGroup.status === 200 && newGroup.json?.group === '空组试验', JSON.stringify(newGroup.json));
+  const afterCreate = await hit(`${BASE}/state`);
+  check(
+    '空组出现在 state（count=0，带备注）',
+    (afterCreate.json?.groups ?? []).some((g) => g.name === '空组试验' && g.count === 0 && g.note === '还没成员'),
+    JSON.stringify(afterCreate.json?.groups),
+  );
+  const dupGroup = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'create', group: '空组试验' } });
+  check('重复建同名组 → 400 且提示已存在', dupGroup.status === 400 && /已存在/.test(dupGroup.json?.error ?? ''), JSON.stringify(dupGroup.json?.error));
+  const persistedEmpty = JSON.parse(readFileSync(statePath, 'utf8'));
+  check('空组已落盘（groups 有条目、objects 无成员）', Boolean(persistedEmpty.groups?.['空组试验']) && !Object.values(persistedEmpty.objects ?? {}).some((cell) => cell?.group === '空组试验'), JSON.stringify(Object.keys(persistedEmpty.groups ?? {})));
+
   const orphanLevel = await hit(`${BASE}/level`, { method: 'POST', body: { name: 'steam', level: 'read' } });
   check('给名单外对象设级别 → 200（成为孤儿键）', orphanLevel.status === 200);
   const pruned = await hit(`${BASE}/prune`, { method: 'POST', body: {} });

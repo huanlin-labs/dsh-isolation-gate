@@ -226,6 +226,10 @@ const handlers = {
   onGroupText: (value) => clicks.push(['groupText', value]),
   onApplyGroup: (name) => clicks.push(['applyGroup', name]),
   onDeleteGroup: (group) => clicks.push(['deleteGroup', group]),
+  onToggleNewGroup: () => clicks.push(['toggleNewGroup']),
+  onNewGroupName: (value) => clicks.push(['newGroupName', value]),
+  onNewGroupNote: (value) => clicks.push(['newGroupNote', value]),
+  onCreateGroup: () => clicks.push(['createGroup']),
   onPrune: () => clicks.push(['prune']),
 };
 
@@ -298,6 +302,18 @@ check('行菜单里有「归组」下拉', openTree.flat.includes('归组'));
 const removeButton = openTree.nodes.find((node) => node.type === 'button' && node.props?.children === '从名单移除');
 removeButton?.props?.onClick?.();
 check('点「从名单移除」→ onAskRemove(Zcode)', JSON.stringify(clicks.at(-1)) === JSON.stringify(['askRemove', 'Zcode']), JSON.stringify(clicks.at(-1)));
+
+const newGroupButton = tree.nodes.find((node) => node.type === 'button' && node.props?.children === '＋ 新建分组');
+check('分组区有「＋ 新建分组」按钮', Boolean(newGroupButton));
+newGroupButton?.props?.onClick?.();
+check('点「＋ 新建分组」→ onToggleNewGroup()', JSON.stringify(clicks.at(-1)) === JSON.stringify(['toggleNewGroup']), JSON.stringify(clicks.at(-1)));
+
+const newGroupTree = renderTree(GateView(Object.assign({}, handlers, { newGroupOpen: true, newGroupDraft: { name: '', note: '' } })));
+check('新建分组表单：组名输入框（占位提示）', newGroupTree.nodes.some((node) => typeof node.props?.placeholder === 'string' && node.props.placeholder.includes('新组名')));
+check('新建分组表单：备注输入框（可选）', newGroupTree.nodes.some((node) => typeof node.props?.placeholder === 'string' && node.props.placeholder.includes('备注（可选）')));
+const createGroupButton = newGroupTree.nodes.find((node) => node.type === 'button' && node.props?.children === '创建');
+createGroupButton?.props?.onClick?.();
+check('点「创建」→ onCreateGroup()', JSON.stringify(clicks.at(-1)) === JSON.stringify(['createGroup']), JSON.stringify(clicks.at(-1)));
 
 const pickButton = tree.nodes.find((node) => node.type === 'button' && typeof node.props?.children === 'string' && node.props.children.startsWith('选择文件夹'));
 pickButton?.props?.onClick?.();
