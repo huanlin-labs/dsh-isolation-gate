@@ -36,7 +36,6 @@
     "lib",
     "bin",
     "locale",
-    "test",
     "cordis.patch.yml",
     "README.md",
     "README.en.md",
