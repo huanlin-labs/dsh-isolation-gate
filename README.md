@@ -1,5 +1,7 @@
 # 门禁 · dsh-isolation-gate
 
+[![npm](https://img.shields.io/npm/v/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate) [![GitHub](https://img.shields.io/badge/GitHub-zhaorui--wu%2Fdsh--isolation--gate-blue.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate)
+
 > **npm**：<https://www.npmjs.com/package/dsh-isolation-gate> · 安装：`dsh plugin --profile desktop add dsh-isolation-gate`
 
 > 给 DeepSeek Harness（DSH）的**隔离区授权台**：一屏看清「这台机器上哪些目录受管、各自什么级别」，
