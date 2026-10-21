@@ -56,6 +56,9 @@ const fakeTools = {
     return () => {};
   },
 };
+const fakeDirectoryPicker = {
+  capability: () => ({ kind: 'native', pick: async () => 'D:\\临时\\picked-dir' }),
+};
 const ctx = {
   tools: fakeTools,
   effect(callback) {
@@ -67,6 +70,7 @@ const ctx = {
   get(service) {
     log.push(`ctx.get('${service}')`);
     if (service === 'webServer') return fakeWebServer;
+    if (service === 'directoryPicker') return fakeDirectoryPicker;
     return undefined;
   },
   inject(names, callback) {
@@ -297,7 +301,7 @@ try {
   const dryRead = await hit(`${BASE}/toolcheck`, { method: 'POST', body: { tool: 'read', args: { path: join(deepDir, 'a.txt') } } });
   check('POST toolcheck（读）→ wouldDeny=false', dryRead.status === 200 && dryRead.json?.wouldDeny === false);
   const pick = await hit(`${BASE}/pick`, { method: 'POST', body: {} });
-  check('POST pick（宿主无选择器）→ 400 且给出退路提示', pick.status === 400 && /未入名单目录|手动输入/.test(pick.json?.error ?? ''), pick.json?.error);
+  check('POST pick → 200 且返回选择器给出的路径', pick.status === 200 && pick.json?.ok === true && /picked-dir/.test(pick.json?.path ?? ''), JSON.stringify(pick.json));
 
   const closedRosterPath = join(root, '不存在的名单.txt');
   const registered2 = [];
@@ -311,7 +315,8 @@ try {
     {
       effect: (callback) => callback(),
       tools: fakeTools,
-      get: (service) => (service === 'webServer' ? fakeWebServer2 : undefined),
+      get: (service) =>
+        service === 'webServer' ? fakeWebServer2 : service === 'directoryPicker' ? fakeDirectoryPicker : undefined,
       inject: () => () => {},
     },
     { statePath, rosterPath: closedRosterPath, auditPath, backupDir, root: `${scanRoot}\\` },
