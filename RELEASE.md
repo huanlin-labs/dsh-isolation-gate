@@ -43,3 +43,12 @@ gh repo edit --add-topic dsh,dsh-plugin,isolation,permissions,authorization
 配好 GitHub 后可接 **trusted publishing（OIDC）**，以后发版免 2FA。
 **结果**：<https://github.com/zhaorui-wu/dsh-isolation-gate>（public，main，topics: dsh/dsh-plugin/isolation/permissions/authorization）。
 ⚠️ 遗留：GitHub Actions 未注册该 workflow（ctions/workflows 返回 0），待查（疑账号级 Actions 或仓库标记问题）。
+
+## 开源配套（2026-10-21 完成）
+
+- GitHub Release：v0.2.1 / v0.2.2（附 tarball）
+- README：横幅 `docs/banner.svg`、6 个徽章、Star CTA、路线图、参与入口
+- 配套文件：CONTRIBUTING / SECURITY / CODE_OF_CONDUCT / Issue 模板 2 个 / PR 模板
+- CI：ubuntu 语法 + windows 全量自测；**已绿**（run 39626753077）
+- 修复：`.gitignore` 曾含 `lib/` → 仓库缺 `lib/toolgate.js`；已移除并强制入库
+- 修复：`bin` 写成 `./bin/gate.mjs` 被 npm 删除 → 0.2.2 改为 `bin/gate.mjs`
