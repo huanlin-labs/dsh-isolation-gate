@@ -1,4 +1,4 @@
-# 门禁 · dsh-access-gate
+# 门禁 · dsh-isolation-gate
 
 > 给 DeepSeek Harness（DSH）的**隔离区授权台**：一屏看清「这台机器上哪些目录受管、各自什么级别」，
 > 点一下就生效 —— **默认禁**、**名单制**、**分组批量切**、**可审计**、**agent 自己能查**。
@@ -27,7 +27,7 @@
 | **分组** | 「harness 隔离」「跨家合作」这类命名组；组头一键切三档；组只存在状态文件里，名单仍是"一行一对象" |
 | **选择文件夹** | 有原生目录选择器就用它；没有就退回「未入名单的一层目录一键加入 + 文本框」 |
 | **两个拦截点** | ① 受管辖通道 `bin/gate.mjs`；② **宿主工具执行门** `ctx.tools.guard()`（2026-10-21 新增） |
-| **审计** | `~/.dsh/dsh-access-gate/access-log.jsonl`：只记时间/对象/级别/操作/允许与否/理由，**不记文件内容** |
+| **审计** | `~/.dsh/dsh-isolation-gate/access-log.jsonl`：只记时间/对象/级别/操作/允许与否/理由，**不记文件内容** |
 | **agent 自查** | `node bin/gate.mjs status` —— 模型/脚本可以直接读策略，不用猜 |
 
 ---
@@ -55,7 +55,7 @@
 ### 路线 A：`dsh plugin add`（推荐，profile 自动追加一行）
 
 ```bash
-dsh plugin --profile desktop add dsh-access-gate
+dsh plugin --profile desktop add dsh-isolation-gate
 ```
 
 > 桌面版（Electron）也可以走「插件」页的**添加插件**，填包名或本地路径。
@@ -64,14 +64,14 @@ dsh plugin --profile desktop add dsh-access-gate
 
 ```jsonc
 // ~/.dsh/profiles/<profile>/package.json
-"dependencies": { "dsh-access-gate": "link:/absolute/path/to/dsh-access-gate" }
+"dependencies": { "dsh-isolation-gate": "link:/absolute/path/to/dsh-isolation-gate" }
 ```
 
 ```yaml
 # ~/.dsh/profiles/<profile>/cordis.patch.yml
 - insert:
-    - id: access-gate
-      name: 'dsh-access-gate'
+    - id: isolation-gate
+      name: 'dsh-isolation-gate'
 ```
 
 ⚠️ **改装配 = 要重启 dsh**。**开关本身不需要重启**：改级别、改名单都是即时落盘。
@@ -80,11 +80,11 @@ dsh plugin --profile desktop add dsh-access-gate
 
 | 配置 | 默认 | 说明 |
 |---|---|---|
-| `statePath` | `<data-root>/access-gate/state.json` | 状态唯一真身 |
-| `rosterPath` | `<data-root>/access-gate/roster.txt` | 名单（一行一对象） |
+| `statePath` | `<data-root>/isolation-gate/state.json` | 状态唯一真身 |
+| `rosterPath` | `<data-root>/isolation-gate/roster.txt` | 名单（一行一对象） |
 | `backupDir` | `<backup-dir>` | 改名单前备份 |
 | `root` | `<drive-root>\` | 列"一层目录"的根 |
-| `auditPath` | `~\.dsh\dsh-access-gate\access-log.jsonl` | 审计 |
+| `auditPath` | `~\.dsh\dsh-isolation-gate\access-log.jsonl` | 审计 |
 | `toolGate` | `true` | 关掉就只剩通道层 |
 | `suspectVocabulary` | `['pi','codex',…]` 内置 | 追加"疑似受管目录"名谱（旧键 `harnessVocabulary` 仍读） |
 
@@ -158,17 +158,17 @@ node bin/gate.mjs log    --limit 20
 
 | 方法 | 路径 | 作用 |
 |---|---|---|
-| GET | `/__dsh-access-gate/ping` | 身份 + 路由清单 + 能力（`toolGate` / `picker`） |
-| GET | `/__dsh-access-gate/state` | 全量状态（名单 / 级别 / 分组 / 差异 / 审计 / 策略行） |
-| POST | `/__dsh-access-gate/level` | `{ name, level }` 改一个对象 |
-| POST | `/__dsh-access-gate/roster` | `{ action:'add'\|'remove', name }` 名单增删 |
-| POST | `/__dsh-access-gate/group-level` | `{ group, level }` 组级一键切 |
-| POST | `/__dsh-access-gate/group` | `{ action:'assign'\|'delete', name?, group }` |
-| POST | `/__dsh-access-gate/prune` | 清理孤儿键 |
-| POST | `/__dsh-access-gate/pick` | 调原生目录选择器（无则 400，面板自动走退路） |
-| POST | `/__dsh-access-gate/toolcheck` | `{ tool, args }` 工具门**干跑**（不执行工具） |
-| POST | `/__dsh-access-gate/check` | `{ name?\|path?, op }` 判定（不读内容） |
-| GET | `/__dsh-access-gate/log?limit=` | 最近审计 |
+| GET | `/__dsh-isolation-gate/ping` | 身份 + 路由清单 + 能力（`toolGate` / `picker`） |
+| GET | `/__dsh-isolation-gate/state` | 全量状态（名单 / 级别 / 分组 / 差异 / 审计 / 策略行） |
+| POST | `/__dsh-isolation-gate/level` | `{ name, level }` 改一个对象 |
+| POST | `/__dsh-isolation-gate/roster` | `{ action:'add'\|'remove', name }` 名单增删 |
+| POST | `/__dsh-isolation-gate/group-level` | `{ group, level }` 组级一键切 |
+| POST | `/__dsh-isolation-gate/group` | `{ action:'assign'\|'delete', name?, group }` |
+| POST | `/__dsh-isolation-gate/prune` | 清理孤儿键 |
+| POST | `/__dsh-isolation-gate/pick` | 调原生目录选择器（无则 400，面板自动走退路） |
+| POST | `/__dsh-isolation-gate/toolcheck` | `{ tool, args }` 工具门**干跑**（不执行工具） |
+| POST | `/__dsh-isolation-gate/check` | `{ name?\|path?, op }` 判定（不读内容） |
+| GET | `/__dsh-isolation-gate/log?limit=` | 最近审计 |
 
 带外部 `Origin` 的请求一律 403；错误方法 405；坏 JSON / 非法级别 400。
 

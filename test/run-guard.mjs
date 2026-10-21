@@ -272,7 +272,7 @@ try {
   check('夹具：审计记下了放行与被拒', /拒绝/.test(fxLog.stdout) && /放行/.test(fxLog.stdout));
 
   // 「不在名单内」的盘根一级目录必须放行（它不是受管对象）。
-  // 取样用**本插件自己的源码目录**（`D:\插件\dsh-access-gate` ⇒ 盘根一级目录名 = `插件`）：
+  // 取样用**本插件自己的源码目录**（`D:\插件\dsh-isolation-gate` ⇒ 盘根一级目录名 = `插件`）：
   // 它一定存在（跑自测时就在里面），且不在夹具名单里 —— 不依赖任何"碰巧存在"的目录。
   const outside = runCli(
     [...common, 'traverse', '--path', pluginRoot],

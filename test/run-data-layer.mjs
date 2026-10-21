@@ -60,7 +60,7 @@ function check(label, ok, detail) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}${detail === undefined ? '' : ` — ${detail}`}`);
 }
 
-const root = mkdtempSync(join(tmpdir(), 'access-gate-data-'));
+const root = mkdtempSync(join(tmpdir(), 'isolation-gate-data-'));
 const statePath = join(root, '门禁-授权.json');
 const rosterPath = join(root, '门禁-名单.txt');
 const backupDir = join(root, '回收站备份');
@@ -233,7 +233,7 @@ try {
   check('未配置名单路径 ⇒ ok:false', blankPathRoster.ok === false, blankPathRoster.error);
 
   // ---------- 差异计算（名字类） ----------
-  const diffRoot = mkdtempSync(join(tmpdir(), 'access-gate-root-'));
+  const diffRoot = mkdtempSync(join(tmpdir(), 'isolation-gate-root-'));
   mkdirSync(join(diffRoot, 'Zcode'));
   mkdirSync(join(diffRoot, 'zcode-typo-missing')); // 故意不建 opencode，制造"名单有、盘上没有"
   mkdirSync(join(diffRoot, 'pi')); // 疑似新 harness，未入名单

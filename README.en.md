@@ -1,4 +1,4 @@
-# Access Gate · dsh-access-gate
+# Access Gate · dsh-isolation-gate
 
 > An **isolation-zone authorization console** for DeepSeek Harness (DSH):
 > one screen that answers "which directories on this machine are managed, what level does each have,
@@ -28,7 +28,7 @@ So the product is the **management surface**:
 | **Groups** | Named groups ("harness isolation", "cross-agent sharing"); one click applies a level to the whole group; groups live in the state file, the roster stays one-object-per-line |
 | **Folder picker** | Uses the host's native directory picker when available; otherwise falls back to "unlisted first-level directories + path input" |
 | **Two enforcement points** | ① the governed channel `bin/gate.mjs`; ② the host **tool pre-execution guard** `ctx.tools.guard()` |
-| **Audit** | `~/.dsh/dsh-access-gate/access-log.jsonl`: time / object / level / op / allowed / reason only — **never file contents** |
+| **Audit** | `~/.dsh/dsh-isolation-gate/access-log.jsonl`: time / object / level / op / allowed / reason only — **never file contents** |
 | **Agent self-check** | `node bin/gate.mjs status` — the model can read the policy instead of guessing |
 
 ---
@@ -56,7 +56,7 @@ Both paths call the **same** `checkAccess`, so the panel, the CLI, and the tool 
 ### A. `dsh plugin add` (recommended)
 
 ```bash
-dsh plugin --profile desktop add dsh-access-gate
+dsh plugin --profile desktop add dsh-isolation-gate
 ```
 
 > On the desktop build you can also use **Plugins → Add plugin** and enter the package name or a local path.
@@ -65,14 +65,14 @@ dsh plugin --profile desktop add dsh-access-gate
 
 ```jsonc
 // ~/.dsh/profiles/<profile>/package.json
-"dependencies": { "dsh-access-gate": "link:D:/plugins/dsh-access-gate" }
+"dependencies": { "dsh-isolation-gate": "link:D:/plugins/dsh-isolation-gate" }
 ```
 
 ```yaml
 # ~/.dsh/profiles/<profile>/cordis.patch.yml
 - insert:
-    - id: access-gate
-      name: 'dsh-access-gate'
+    - id: isolation-gate
+      name: 'dsh-isolation-gate'
 ```
 
 ⚠️ **Changing the composition requires a dsh restart.** Switching levels or editing the roster does **not**.
@@ -81,11 +81,11 @@ dsh plugin --profile desktop add dsh-access-gate
 
 | Config | Default | Meaning |
 |---|---|---|
-| `statePath` | `<data-root>/access-gate/state.json` | single source of truth |
-| `rosterPath` | `<data-root>/access-gate/roster.txt` | roster, one object per line |
+| `statePath` | `<data-root>/isolation-gate/state.json` | single source of truth |
+| `rosterPath` | `<data-root>/isolation-gate/roster.txt` | roster, one object per line |
 | `backupDir` | `<backup-dir>` | backup before roster edits |
 | `root` | `<drive-root>\` | root whose first-level directories are listed |
-| `auditPath` | `~\.dsh\dsh-access-gate\access-log.jsonl` | audit log |
+| `auditPath` | `~\.dsh\dsh-isolation-gate\access-log.jsonl` | audit log |
 | `toolGate` | `true` | false = channel-only enforcement |
 | `suspectVocabulary` | built-in `['pi','codex',…]` | extra "suspected harness directory" names (legacy `harnessVocabulary` still read) |
 
@@ -156,17 +156,17 @@ node bin/gate.mjs log    --limit 20
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/__dsh-access-gate/ping` | identity + route list + capabilities (`toolGate` / `picker`) |
-| GET | `/__dsh-access-gate/state` | full state (roster / levels / groups / diffs / audit / policy lines) |
-| POST | `/__dsh-access-gate/level` | `{ name, level }` |
-| POST | `/__dsh-access-gate/roster` | `{ action:'add'\|'remove', name }` |
-| POST | `/__dsh-access-gate/group-level` | `{ group, level }` |
-| POST | `/__dsh-access-gate/group` | `{ action:'assign'\|'delete', name?, group }` |
-| POST | `/__dsh-access-gate/prune` | remove orphan state keys |
-| POST | `/__dsh-access-gate/pick` | native directory picker (400 when unavailable) |
-| POST | `/__dsh-access-gate/toolcheck` | `{ tool, args }` dry-run of the tool guard |
-| POST | `/__dsh-access-gate/check` | `{ name?\|path?, op }` |
-| GET | `/__dsh-access-gate/log?limit=` | recent audit |
+| GET | `/__dsh-isolation-gate/ping` | identity + route list + capabilities (`toolGate` / `picker`) |
+| GET | `/__dsh-isolation-gate/state` | full state (roster / levels / groups / diffs / audit / policy lines) |
+| POST | `/__dsh-isolation-gate/level` | `{ name, level }` |
+| POST | `/__dsh-isolation-gate/roster` | `{ action:'add'\|'remove', name }` |
+| POST | `/__dsh-isolation-gate/group-level` | `{ group, level }` |
+| POST | `/__dsh-isolation-gate/group` | `{ action:'assign'\|'delete', name?, group }` |
+| POST | `/__dsh-isolation-gate/prune` | remove orphan state keys |
+| POST | `/__dsh-isolation-gate/pick` | native directory picker (400 when unavailable) |
+| POST | `/__dsh-isolation-gate/toolcheck` | `{ tool, args }` dry-run of the tool guard |
+| POST | `/__dsh-isolation-gate/check` | `{ name?\|path?, op }` |
+| GET | `/__dsh-isolation-gate/log?limit=` | recent audit |
 
 External `Origin` → 403; wrong method → 405; bad JSON / invalid level → 400.
 

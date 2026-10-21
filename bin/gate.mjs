@@ -36,7 +36,7 @@ import { buildReport, check, levelInfo, normalizeConfig } from '../lib/service.j
 import { readRoster } from '../lib/roster.js';
 import { readState } from '../lib/store.js';
 
-const CHANNEL = 'dsh-access-gate/bin/gate.mjs';
+const CHANNEL = 'dsh-isolation-gate/bin/gate.mjs';
 const MAX_READ_BYTES = 2 * 1024 * 1024;
 const DEFAULT_DELETE_BACKUP_DIR = 'D:\\回收站\\门禁-改前';
 

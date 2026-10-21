@@ -47,7 +47,7 @@ globalThis.window = {
 
 await import('../lib/client.js');
 
-check('bundle 求值后注册了模块', captured !== null && captured.id === 'dsh-access-gate', captured?.id);
+check('bundle 求值后注册了模块', captured !== null && captured.id === 'dsh-isolation-gate', captured?.id);
 const moduleExports = captured.factory((id) => {
   if (id === 'react') return reactStub;
   throw new Error(`unexpected require(${id})`);
@@ -79,17 +79,17 @@ const row = registrations.find((item) => item.definition.name === 'sidebar.panel
 const page = registrations.find((item) => item.definition.name === 'main');
 check('注册了 2 个座位', registrations.length === 2, registrations.map((item) => item.definition.name).join(' / '));
 check('座位 ①：sidebar.panellist 行', Boolean(row));
-check('行的 id = access-gate', row?.definition.id === 'access-gate', row?.definition.id);
+check('行的 id = isolation-gate', row?.definition.id === 'isolation-gate', row?.definition.id);
 check('行的 label = 门禁', row?.definition.label === '门禁', row?.definition.label);
 check('行 order = 6（技能=5 的正下方，自动化任务=10 之前）', row?.definition.order === 6, String(row?.definition.order));
-check('座位 ②：main 整页，key 与行 id 同名', page?.definition.key === 'access-gate', page?.definition.key);
+check('座位 ②：main 整页，key 与行 id 同名', page?.definition.key === 'isolation-gate', page?.definition.key);
 check('两个座位都经 slots.inject 声明后注册', injections.join(',') === 'sidebar.panellist,main', injections.join(','));
 
 const { GateIcon, GateView, Segmented, PANEL_ID, PANEL_ORDER } = moduleExports.__selftest;
-check('自测出口常量一致', PANEL_ID === 'access-gate' && PANEL_ORDER === 6, `${PANEL_ID}/${PANEL_ORDER}`);
+check('自测出口常量一致', PANEL_ID === 'isolation-gate' && PANEL_ORDER === 6, `${PANEL_ID}/${PANEL_ORDER}`);
 
 const icon = GateIcon({ size: 18 });
-check('图标是 svg 且带皮肤契约钩子', icon.type === 'svg' && icon.props['data-dsh-panel-entry'] === 'access-gate');
+check('图标是 svg 且带皮肤契约钩子', icon.type === 'svg' && icon.props['data-dsh-panel-entry'] === 'isolation-gate');
 check('图标用外壳给的尺寸', icon.props.width === 18 && icon.props.height === 18, String(icon.props.width));
 
 let missingSeatThrew = null;
@@ -148,7 +148,7 @@ const fixture = {
   version: 2,
   now: '2026-10-21T10:00:00.000Z',
   features: { toolGate: true, groups: true, picker: true },
-  paths: { state: 'D:\\.agents\\门禁-授权.json', roster: 'D:\\.agents\\门禁-名单.txt', root: 'D:\\', backupDir: 'D:\\回收站\\门禁-名单改前', audit: 'C:\\.dsh\\dsh-access-gate\\access-log.jsonl' },
+  paths: { state: 'D:\\.agents\\门禁-授权.json', roster: 'D:\\.agents\\门禁-名单.txt', root: 'D:\\', backupDir: 'D:\\回收站\\门禁-名单改前', audit: 'C:\\.dsh\\dsh-isolation-gate\\access-log.jsonl' },
   files: {
     stateExists: true,
     stateError: null,
@@ -287,7 +287,7 @@ check('孤儿键段给出清理按钮', tree.flat.includes('清理 1 个'));
 check('旧格式迁移提示渲染出来', tree.flat.includes('自动迁移'));
 check('纪律页脚写明"不读任何受管对象内部内容"', tree.flat.includes('不读任何受管对象内部内容'));
 check('页脚写明 fail-closed', tree.flat.includes('一律拒绝'));
-check('根节点带 data-dsh-plugin=access-gate', tree.nodes[0]?.props?.['data-dsh-plugin'] === 'access-gate');
+check('根节点带 data-dsh-plugin=isolation-gate', tree.nodes[0]?.props?.['data-dsh-plugin'] === 'isolation-gate');
 check('受管对象行带 data-gate-object 便于皮肤定位', tree.nodes.some((node) => node.props?.['data-gate-object'] === 'Zcode'));
 
 // ---- 交互接线 ------------------------------------------------------------
