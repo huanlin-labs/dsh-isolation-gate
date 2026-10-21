@@ -60,5 +60,13 @@
       ],
       "platform": "web"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhaorui-wu/dsh-isolation-gate.git"
+  },
+  "homepage": "https://github.com/zhaorui-wu/dsh-isolation-gate#readme",
+  "bugs": {
+    "url": "https://github.com/zhaorui-wu/dsh-isolation-gate/issues"
   }
 }
