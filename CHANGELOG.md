@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3 — 2026-10-21
+
+- 新增 `npm run release:check`：一条命令核对「本地版本 / npm latest / git tag / GitHub Release / 元数据回链 / 发现性关键词」
+- 关键词补齐：`deepseek-harness`、`cordis`、`ai-agent`、`security`（插件市场按关键词抓取）
+- GitHub topics 补到 10 个：`dsh` `dsh-plugin` `dsh-bundle` `deepseek-harness` `isolation` `permissions` `authorization` `access-control` `ai-agent` `security`
 ## 0.2.2 — 2026-10-21
 
 - **修复**：`bin` 写成 `./bin/gate.mjs` 时 npm 会判定名字非法并**删除 bin 入口**（0.2.1 因此缺 `gate` 命令）；改为 `bin/gate.mjs`
