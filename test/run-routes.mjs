@@ -83,7 +83,7 @@ apply(ctx, { statePath, rosterPath, auditPath, backupDir, root: `${scanRoot}\\` 
 
 check('导出 name = dsh-isolation-gate', name === 'dsh-isolation-gate', name);
 check('inject 为空数组（不猜、不探服务）', JSON.stringify(inject) === '["tools"]', JSON.stringify(inject));
-check('注册了 8 条路由', registered.length === 13, registered.map((row) => row.path).join(' '));
+check('注册了 16 条路由', registered.length === 16, registered.map((row) => row.path).join(' '));
 check('路由前缀已改名（/__dsh-isolation-gate/*）', registered.every((row) => row.path.startsWith('/__dsh-isolation-gate/')), registered.map((row) => row.path).join(' '));
 check('每条路由都是 kind=exact', registered.every((row) => row.kind === 'exact'));
 check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPicker')")), log.join(' '));
@@ -145,7 +145,7 @@ const BASE = '/__dsh-isolation-gate';
 try {
   const ping = await hit(`${BASE}/ping`);
   check('GET ping → 200', ping.status === 200, String(ping.status));
-  check('ping 报出 8 条路由', Array.isArray(ping.json?.routes) && ping.json.routes.length === 13);
+  check('ping 报出的路由数与注册数一致', Array.isArray(ping.json?.routes) && ping.json.routes.length === registered.length, `${ping.json?.routes?.length}/${registered.length}`);
   check('ping 报出三级说明', Array.isArray(ping.json?.table) && ping.json.table.length === 3, JSON.stringify(ping.json?.levels));
   check('ping 报出受管辖通道名（dsh-isolation-gate/bin/gate.mjs）', ping.json?.guardChannel === 'dsh-isolation-gate/bin/gate.mjs', ping.json?.guardChannel);
   check('apply() 本身不写盘（状态文件此刻还不存在）', !existsSync(statePath), 'apply 无副作用');
@@ -287,7 +287,7 @@ try {
   check('POST group-level → 200 且报 count=1', groupLevel.status === 200 && groupLevel.json?.count === 1, JSON.stringify(groupLevel.json?.count));
   check('组级切换已落盘（pi = full）', groupLevel.json?.report?.roster?.find((r) => r.name === 'pi')?.level === 'full');
   const persistedGroup = JSON.parse(readFileSync(statePath, 'utf8'));
-  check('状态文件 v2：groups/objects 落盘', persistedGroup.version === 2 && Boolean(persistedGroup.groups?.['harness 隔离']) && persistedGroup.objects?.pi?.group === 'harness 隔离', JSON.stringify(Object.keys(persistedGroup)));
+  check('状态文件 v3：groups/objects 落盘', persistedGroup.version === 3 && Boolean(persistedGroup.groups?.['harness 隔离']) && persistedGroup.objects?.pi?.group === 'harness 隔离', JSON.stringify(Object.keys(persistedGroup)));
   const delGroup = await hit(`${BASE}/group`, { method: 'POST', body: { action: 'delete', group: 'harness 隔离' } });
   check('POST group delete → 200 且成员保留', delGroup.status === 200 && Array.isArray(delGroup.json?.released) && delGroup.json.released.includes('pi'), JSON.stringify(delGroup.json?.released));
 
