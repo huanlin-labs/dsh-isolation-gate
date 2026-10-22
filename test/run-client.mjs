@@ -396,8 +396,8 @@ check('干净态审计显示"暂无记录"', cleanTree.flat.includes('暂无记�
 const { TabBar, SHELL_TABS, PROFILE_PLAIN } = moduleExports.__selftest;
 check('标签共 3 个', SHELL_TABS.length === 3, String(SHELL_TABS.length));
 check(
-  '标签用白话名（隔离强度，不再是「策略档」）',
-  SHELL_TABS.map((row) => row[1]).join('/') === '对象与授权/隔离强度/审计与诊断',
+  '标签用白话名（全局门禁 / 特别门禁）',
+  SHELL_TABS.map((row) => row[1]).join('/') === '全局门禁/特别门禁/审计与诊断',
   SHELL_TABS.map((row) => row[1]).join('/'),
 );
 const tabBar = TabBar({ value: 'list', onPick: () => {} });
