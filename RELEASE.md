@@ -34,14 +34,14 @@
 gh auth login --hostname github.com --git-protocol https --web
 # 2) 建仓并推送
 cd D:\插件\dsh-isolation-gate
-gh repo create zhaorui-wu/dsh-isolation-gate --public --source=. --remote=origin --push `
+gh repo create huanlin-labs/dsh-isolation-gate --public --source=. --remote=origin --push `
   --description "DSH plugin: default-deny directory authorization desk (isolation gate) with roster, groups, audit and agent self-check"
 gh repo edit --add-topic dsh,dsh-plugin,isolation,permissions,authorization
 # 3) 回填元数据（下次发版生效）
-#    package.json: repository/homepage/bugs → github.com/zhaorui-wu/dsh-isolation-gate
+#    package.json: repository/homepage/bugs → github.com/huanlin-labs/dsh-isolation-gate
 ```
 配好 GitHub 后可接 **trusted publishing（OIDC）**，以后发版免 2FA。
-**结果**：<https://github.com/zhaorui-wu/dsh-isolation-gate>（public，main，topics: dsh/dsh-plugin/isolation/permissions/authorization）。
+**结果**：<https://github.com/huanlin-labs/dsh-isolation-gate>（public，main，topics: dsh/dsh-plugin/isolation/permissions/authorization）。
 ⚠️ 遗留：GitHub Actions 未注册该 workflow（ctions/workflows 返回 0），待查（疑账号级 Actions 或仓库标记问题）。
 
 ## 开源配套（2026-10-21 完成）

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 安全漏洞（私密）
-    url: https://github.com/zhaorui-wu/dsh-isolation-gate/security/advisories/new
+    url: https://github.com/huanlin-labs/dsh-isolation-gate/security/advisories/new
     about: 不要开公开 Issue，请走私密报告。
   - name: 使用问题 / 讨论
-    url: https://github.com/zhaorui-wu/dsh-isolation-gate/discussions
+    url: https://github.com/huanlin-labs/dsh-isolation-gate/discussions
     about: 装不上、不知道怎么配，来这里问。

@@ -70,10 +70,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhaorui-wu/dsh-isolation-gate.git"
+    "url": "git+https://github.com/huanlin-labs/dsh-isolation-gate.git"
   },
-  "homepage": "https://github.com/zhaorui-wu/dsh-isolation-gate#readme",
+  "homepage": "https://github.com/huanlin-labs/dsh-isolation-gate#readme",
   "bugs": {
-    "url": "https://github.com/zhaorui-wu/dsh-isolation-gate/issues"
+    "url": "https://github.com/huanlin-labs/dsh-isolation-gate/issues"
   }
 }

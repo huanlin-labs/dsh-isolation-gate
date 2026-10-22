@@ -4,14 +4,14 @@
 
 ## 先聊再写
 
-- **Bug / 想法**：先开 [Issue](https://github.com/zhaorui-wu/dsh-isolation-gate/issues)，把「你期望什么、实际发生什么、怎么复现」写清楚。
+- **Bug / 想法**：先开 [Issue](https://github.com/huanlin-labs/dsh-isolation-gate/issues)，把「你期望什么、实际发生什么、怎么复现」写清楚。
 - **要改行为 / 加配置项**：先在 Issue 里说一句，避免白写。
 - **只改错别字 / 注释**：直接提 PR，不用先问。
 
 ## 本地开发
 
 ```bash
-git clone https://github.com/zhaorui-wu/dsh-isolation-gate.git
+git clone https://github.com/huanlin-labs/dsh-isolation-gate.git
 cd dsh-isolation-gate
 node --version        # 需要 >= 20.11
 npm test              # 4 个套件，325 条断言，无外部依赖

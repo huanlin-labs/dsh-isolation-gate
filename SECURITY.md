@@ -3,7 +3,7 @@
 ## 报告漏洞
 
 **不要开公开 Issue。** 请用 GitHub 的私密通道：
-[Report a vulnerability](https://github.com/zhaorui-wu/dsh-isolation-gate/security/advisories/new)
+[Report a vulnerability](https://github.com/huanlin-labs/dsh-isolation-gate/security/advisories/new)
 
 或在 Issue 里只说「有安全问题，需要私聊」，我回你一个私密渠道。
 

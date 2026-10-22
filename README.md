@@ -4,9 +4,9 @@
 
 [![npm version](https://img.shields.io/npm/v/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate)
 [![npm downloads](https://img.shields.io/npm/dm/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate)
-[![GitHub stars](https://img.shields.io/github/stars/zhaorui-wu/dsh-isolation-gate.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/huanlin-labs/dsh-isolation-gate.svg)](https://github.com/huanlin-labs/dsh-isolation-gate/stargazers)
 [![license](https://img.shields.io/npm/l/dsh-isolation-gate.svg)](./LICENSE)
-[![CI](https://github.com/zhaorui-wu/dsh-isolation-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/zhaorui-wu/dsh-isolation-gate/actions/workflows/ci.yml)
+[![CI](https://github.com/huanlin-labs/dsh-isolation-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/huanlin-labs/dsh-isolation-gate/actions/workflows/ci.yml)
 [![node](https://img.shields.io/node/v/dsh-isolation-gate.svg)](https://nodejs.org)
 
 **给 DeepSeek Harness（DSH）的隔离区授权台：默认禁、名单制、点一下生效、可审计、agent 自己能查。**
@@ -18,7 +18,7 @@ dsh plugin --profile desktop add dsh-isolation-gate
 ```
 
 > ⭐ **如果它帮你少踩一次坑，点个 Star 能让更多人找到它** —— 这是这个项目唯一的「传播预算」。
-> [![Star](https://img.shields.io/github/stars/zhaorui-wu/dsh-isolation-gate?style=social)](https://github.com/zhaorui-wu/dsh-isolation-gate)
+> [![Star](https://img.shields.io/github/stars/huanlin-labs/dsh-isolation-gate?style=social)](https://github.com/huanlin-labs/dsh-isolation-gate)
 
 ![门禁总览](docs/screenshots/01-overview.png)
 
@@ -258,15 +258,15 @@ MIT · 见 [LICENSE](./LICENSE)。
 - ❌ 内核级沙箱（该交给 Windows ACL / VM）
 - ❌ 云端同步 / 账号体系（本插件只认本机状态文件）
 
-有想法请开 [Issue](https://github.com/zhaorui-wu/dsh-isolation-gate/issues)，说清处境比说清方案更有用。
+有想法请开 [Issue](https://github.com/huanlin-labs/dsh-isolation-gate/issues)，说清处境比说清方案更有用。
 
 ---
 
 ## 参与
 
-- 装不上 / 不会配 → [Discussions](https://github.com/zhaorui-wu/dsh-isolation-gate/discussions)
-- 有 Bug → [Bug 报告](https://github.com/zhaorui-wu/dsh-isolation-gate/issues/new?template=bug_report.yml)
-- 想加功能 → [功能建议](https://github.com/zhaorui-wu/dsh-isolation-gate/issues/new?template=feature_request.yml)
+- 装不上 / 不会配 → [Discussions](https://github.com/huanlin-labs/dsh-isolation-gate/discussions)
+- 有 Bug → [Bug 报告](https://github.com/huanlin-labs/dsh-isolation-gate/issues/new?template=bug_report.yml)
+- 想加功能 → [功能建议](https://github.com/huanlin-labs/dsh-isolation-gate/issues/new?template=feature_request.yml)
 - 改代码 → [CONTRIBUTING.md](./CONTRIBUTING.md)（`npm test` 全绿即可提 PR）
 - 安全问题 → [SECURITY.md](./SECURITY.md)（不要开公开 Issue）
 
@@ -276,4 +276,4 @@ MIT · 见 [LICENSE](./LICENSE)。
 
 **点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
 
-[![Star History Chart](https://api.star-history.com/svg?repos=zhaorui-wu/dsh-isolation-gate&type=Date)](https://star-history.com/#zhaorui-wu/dsh-isolation-gate&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
