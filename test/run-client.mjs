@@ -392,6 +392,33 @@ const cleanTree = renderTree(
 check('干净态报「无差异」', cleanTree.flat.includes('无差异'));
 check('干净态审计显示"暂无记录"', cleanTree.flat.includes('暂无记录'));
 
+// ---- 外壳标签（2026-10-22 回归：户主报「三个标签点了不切换」） -----------------
+const { TabBar, SHELL_TABS, PROFILE_PLAIN } = moduleExports.__selftest;
+check('标签共 3 个', SHELL_TABS.length === 3, String(SHELL_TABS.length));
+check(
+  '标签用白话名（隔离强度，不再是「策略档」）',
+  SHELL_TABS.map((row) => row[1]).join('/') === '对象与授权/隔离强度/审计与诊断',
+  SHELL_TABS.map((row) => row[1]).join('/'),
+);
+const tabBar = TabBar({ value: 'list', onPick: () => {} });
+const tabButtons = tabBar.props.children;
+check('标签栏渲染 3 个原生 button', Array.isArray(tabButtons) && tabButtons.length === 3 && tabButtons.every((el) => el.type === 'button'), String(tabButtons?.length));
+check('每个标签带 data-gate-tab 钩子', tabButtons.map((el) => el.props['data-gate-tab']).join(',') === 'list,profiles,audit', tabButtons.map((el) => el.props['data-gate-tab']).join(','));
+check('当前页标签 aria-selected=true，其余 false', tabButtons[0].props['aria-selected'] === 'true' && tabButtons[1].props['aria-selected'] === 'false', `${tabButtons[0].props['aria-selected']}/${tabButtons[1].props['aria-selected']}`);
+check('标签是 type=button（不会当提交按钮）', tabButtons.every((el) => el.props.type === 'button'));
+
+const tabPicks = [];
+const pickBar = TabBar({ value: 'list', onPick: (id) => tabPicks.push(id) });
+pickBar.props.children.forEach((el) => el.props.onClick());
+check('点三个标签分别回传 list / profiles / audit', tabPicks.join(',') === 'list,profiles,audit', tabPicks.join(','));
+
+const shell = moduleExports.__selftest.GateShell();
+check('外壳首屏渲染列表页（默认档位 list）', Boolean(shell) && shell.props.children.length === 2);
+check('外壳顶栏里有标签栏 + 当前页说明', shell.props.children[0].props.children.length === 3, String(shell.props.children[0].props.children.length));
+
+check('三档白话名齐备', ['normal', 'strict', 'sealed'].every((k) => PROFILE_PLAIN[k]?.cn && PROFILE_PLAIN[k]?.line), Object.keys(PROFILE_PLAIN).join(','));
+check('三档白话名 = 宽松 / 严格 / 全封', [PROFILE_PLAIN.normal.cn, PROFILE_PLAIN.strict.cn, PROFILE_PLAIN.sealed.cn].join('/') === '宽松/严格/全封');
+
 // ---- 报告 ----------------------------------------------------------------
 mkdirSync(reportDir, { recursive: true });
 const passed = checks.filter((row) => row.ok).length;
