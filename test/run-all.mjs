@@ -16,6 +16,7 @@ mkdirSync(reportDir, { recursive: true });
 const suites = [
   ['数据层（状态 / 名单 / 差异）', join(import.meta.dirname, 'run-data-layer.mjs')],
   ['受管辖通道（含默认禁与 fail-closed 负向证据）', join(import.meta.dirname, 'run-guard.mjs')],
+  ['策略档（profile / 会话绑定 / 联网软禁）', join(import.meta.dirname, 'run-profiles.mjs')],
   ['宿主路由', join(import.meta.dirname, 'run-routes.mjs')],
   ['客户端（槽位 / 渲染 / 交互）', join(import.meta.dirname, 'run-client.mjs')],
 ];
