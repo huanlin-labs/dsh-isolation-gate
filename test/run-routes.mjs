@@ -83,7 +83,7 @@ apply(ctx, { statePath, rosterPath, auditPath, backupDir, root: `${scanRoot}\\` 
 
 check('导出 name = dsh-isolation-gate', name === 'dsh-isolation-gate', name);
 check('inject 为空数组（不猜、不探服务）', JSON.stringify(inject) === '["tools"]', JSON.stringify(inject));
-check('注册了 6 条路由', registered.length === 11, registered.map((row) => row.path).join(' '));
+check('注册了 7 条路由', registered.length === 12, registered.map((row) => row.path).join(' '));
 check('路由前缀已改名（/__dsh-isolation-gate/*）', registered.every((row) => row.path.startsWith('/__dsh-isolation-gate/')), registered.map((row) => row.path).join(' '));
 check('每条路由都是 kind=exact', registered.every((row) => row.kind === 'exact'));
 check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPicker')")), log.join(' '));
@@ -145,7 +145,7 @@ const BASE = '/__dsh-isolation-gate';
 try {
   const ping = await hit(`${BASE}/ping`);
   check('GET ping → 200', ping.status === 200, String(ping.status));
-  check('ping 报出 6 条路由', Array.isArray(ping.json?.routes) && ping.json.routes.length === 11);
+  check('ping 报出 7 条路由', Array.isArray(ping.json?.routes) && ping.json.routes.length === 12);
   check('ping 报出三级说明', Array.isArray(ping.json?.table) && ping.json.table.length === 3, JSON.stringify(ping.json?.levels));
   check('ping 报出受管辖通道名（dsh-isolation-gate/bin/gate.mjs）', ping.json?.guardChannel === 'dsh-isolation-gate/bin/gate.mjs', ping.json?.guardChannel);
   check('apply() 本身不写盘（状态文件此刻还不存在）', !existsSync(statePath), 'apply 无副作用');

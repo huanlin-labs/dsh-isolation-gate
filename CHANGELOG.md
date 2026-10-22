@@ -50,3 +50,9 @@
 - 联网软禁：`web_search` / `web_fetch` 等工具 + `curl` / `npm install` / `git clone` 等命令；`npm test`、`git status` 不误判
 - `sealed` 下认不出路径的 shell 命令一律拒
 - 自测：新增 44 + 12 条断言，套件 6/6 通过
+
+### 面板拆成三页（同日）
+
+- 侧栏三项：`门禁`（对象授权）/ `门禁 · 策略`（档位与目录绑定，只读）/ `门禁 · 审计`（磁盘差异 + 审计账本）
+- 新增宿主路由 `GET /__dsh-isolation-gate/profiles`
+- 原单页保留为第 1 页，内容未删

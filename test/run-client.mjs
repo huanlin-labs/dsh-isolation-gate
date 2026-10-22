@@ -77,13 +77,13 @@ moduleExports.apply(ctx);
 
 const row = registrations.find((item) => item.definition.name === 'sidebar.panellist');
 const page = registrations.find((item) => item.definition.name === 'main');
-check('注册了 2 个座位', registrations.length === 2, registrations.map((item) => item.definition.name).join(' / '));
+check('注册了 6 个座位（三页 × 侧栏 + 主区）', registrations.length === 6, registrations.map((item) => item.definition.name).join(' / '));
 check('座位 ①：sidebar.panellist 行', Boolean(row));
 check('行的 id = isolation-gate', row?.definition.id === 'isolation-gate', row?.definition.id);
 check('行的 label = 门禁', row?.definition.label === '门禁', row?.definition.label);
 check('行 order = 6（技能=5 的正下方，自动化任务=10 之前）', row?.definition.order === 6, String(row?.definition.order));
 check('座位 ②：main 整页，key 与行 id 同名', page?.definition.key === 'isolation-gate', page?.definition.key);
-check('两个座位都经 slots.inject 声明后注册', injections.join(',') === 'sidebar.panellist,main', injections.join(','));
+check('三页都经 slots.inject 声明后注册', injections.length === 6 && injections.every((name, index) => name === (index % 2 === 0 ? 'sidebar.panellist' : 'main')), injections.join(','));
 
 const { GateIcon, GateView, Segmented, PANEL_ID, PANEL_ORDER } = moduleExports.__selftest;
 check('自测出口常量一致', PANEL_ID === 'isolation-gate' && PANEL_ORDER === 6, `${PANEL_ID}/${PANEL_ORDER}`);
