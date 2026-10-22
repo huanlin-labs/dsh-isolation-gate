@@ -60,3 +60,5 @@
 - 修正：不做三个侧栏项，改回**一个「门禁」+ 页内标签**（对象与分组 / 策略档 / 审计与诊断），与「技能」面板同款交互
 
 - 审计页新增「清空审计」：清空前整份备份到 `D:\回收站\isolation-gate-audit\access-log-<时间>.jsonl`，再截断原文件；新增 `POST /__dsh-isolation-gate/audit/clear`
+
+- 修：`POST /audit/clear` 缺 `clearAudit` 导入（运行时 ReferenceError → 400）；前端改用 `post()` 正确序列化 body
