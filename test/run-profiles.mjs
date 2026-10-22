@@ -105,6 +105,15 @@ const sealedWithAllow = normalizeProfile('sealed', {
   mode: 'sealed',
   allow: [{ path: 'D:\\工作区\\A', level: 'full' }],
 });
+const noPathShell = evaluateCall(sealedWithAllow, {
+  tool: 'pwsh',
+  shell: true,
+  command: 'Get-ChildItem',
+  targets: [],
+  known: true,
+});
+ok('sealed：认不出路径的 shell 命令 ⇒ 拒', !noPathShell.allowed, noPathShell.reason);
+
 const localCmd = evaluateCall(sealedWithAllow, {
   tool: 'pwsh',
   shell: true,

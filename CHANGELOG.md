@@ -40,3 +40,13 @@
 
 ### 自测
 - `npm test` → 4 个套件 · **325 断言**全绿（数据层 85 / 通道 74 / 路由 84 / 客户端 82）。
+
+## 0.3.0 — 策略档（会话级隔离）
+
+- 新增三种档：`blocklist`（原行为）/ `allowlist`（只允许列出目录，其余全拒）/ `sealed`（再加禁网与未知工具全拒）
+- 档的绑定：**会话覆盖**（`state.sessionOverrides[sessionId]`，用 `exec.agent.id`）> **目录配置** `.dsh-gate.json` > 全局默认档
+- `.dsh-gate.json` **只能加严、且只能管自己所在的子树**：写 `C:\` 不会生效（防"仓库自带配置解锁"）
+- 坏配置 / 坏状态文件 ⇒ 按 `sealed` 处理（fail-closed）
+- 联网软禁：`web_search` / `web_fetch` 等工具 + `curl` / `npm install` / `git clone` 等命令；`npm test`、`git status` 不误判
+- `sealed` 下认不出路径的 shell 命令一律拒
+- 自测：新增 44 + 12 条断言，套件 6/6 通过
