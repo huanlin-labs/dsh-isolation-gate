@@ -34,6 +34,12 @@ const reactStub = {
   useMemo: (fn) => fn(),
   useEffect: () => undefined,
   useState: (initial) => [initial, () => {}],
+  Component: class {
+    constructor(props) {
+      this.props = props;
+      this.state = {};
+    }
+  },
 };
 
 let captured = null;
