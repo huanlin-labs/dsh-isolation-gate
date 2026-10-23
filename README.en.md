@@ -91,22 +91,24 @@ dsh plugin --profile desktop add dsh-isolation-gate
 
 ---
 
-## State file (v2)
+## State file (v3)
 
 ```jsonc
 {
-  "version": 2,
+  "version": 3,
   "defaultLevel": "deny",
   "groups": { "harness isolation": { "note": "", "updatedAt": "…" } },
   "objects": {
     "Zcode": { "level": "deny", "note": "", "group": "harness isolation", "updatedAt": "…" },
     "E:\\data\\shared\\project": { "level": "read", "note": "", "group": "", "updatedAt": "…" }
-  }
+  },
+  "profiles": { "strict-delivery": { "mode": "allowlist", "allow": [{ "path": "E:\\data\\shared", "level": "read" }], "network": "deny", "unknownTool": "deny" } },
+  "sessionOverrides": { "<sessionId>": "strict-delivery" }
 }
 ```
 
-- **v1 is still readable**: legacy `harnesses: { key: { level } }` is migrated on read, **levels are preserved**;
-  the next write persists v2.
+- **Legacy formats stay readable**: v1 `harnesses: { key: { level } }` and v2 `objects` are normalised to v3 on read
+  (**levels are preserved**; `profiles` / `sessionOverrides` default to empty); the next write persists v3.
 - Missing file = **deny everything**; corrupt JSON = **deny everything and never overwrite it**.
 - No BOM; writes go through temp-file + rename (atomic).
 - `state.harnesses` remains a read-only in-memory alias; it is no longer written to disk.
@@ -185,6 +187,19 @@ External `Origin` → 403; wrong method → 405; bad JSON / invalid level → 40
 
 ---
 
+## The 1.0 stability promise
+
+From 1.0 onward, the surfaces below **only grow, never break**. A breaking change would ship as 2.0 with a migration note.
+
+| Surface | Promise |
+|---|---|
+| **State file** | On-disk format `v3`; v1 / v2 are read-compatible and upgraded on write, levels preserved. New fields are appended only; existing field meanings do not change. |
+| **CLI** | `bin/gate.mjs` subcommands and exit codes (`0` allowed / `3` denied / `2` usage or environment error) are frozen; new flags are additive. |
+| **HTTP** | Existing `/__dsh-isolation-gate/*` paths and methods are frozen; new routes are additive. |
+| **Decision semantics** | The three levels (deny / read / full), longest-prefix matching, default deny and fail-closed are frozen — changing them would be a different product. |
+
+**Not promised**: panel visuals and copy, and audit-log fields, may evolve; bug fixes are not breaking changes.
+
 ## Known boundaries (read this)
 
 1. **Raw filesystem access and separate processes are not blocked.** Any program or script that bypasses DSH tool calls can read/write the disk directly.
@@ -198,7 +213,7 @@ External `Origin` → 403; wrong method → 405; bad JSON / invalid level → 40
 ## Tests
 
 ```bash
-node test/run-all.mjs     # 4 suites · 309 assertions · fully offline
+node test/run-all.mjs     # 6 suites · 396 assertions · fully offline
 node --check lib/*.js
 ```
 

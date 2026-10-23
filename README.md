@@ -28,8 +28,10 @@ dsh plugin --profile desktop add dsh-isolation-gate
 
 它不是又一个 allow/deny 规则引擎，也不是沙箱本身。
 
-- **别人做的是「怎么让 agent 多访问几个目录」**（multi-root / allowlist / write-protect）或「怎么用规则拦住工具」（permission-rules / safety-net）；
-- **我们做的是「这台机器上哪些目录属于禁区、现在给什么级别、谁改的、agent 自己怎么查」**。
+- **别人按「工具 / 命令 / 参数」立规则**（`dsh-permission-rules`、`dsh-permissions` 这类：allow / deny / ask + glob / 正则）；
+- **我们按「目录」立对象**：这台机器上哪些目录属于禁区、现在给什么级别、谁改的、agent 自己怎么查。
+
+规则引擎回答的是「**这次调用准不准**」，门禁回答的是「**这个目录开不开**」。两者可以叠着用，不冲突。
 
 所以它的核心是**管理面**：
 
@@ -105,23 +107,23 @@ dsh plugin --profile desktop add dsh-isolation-gate
 
 ---
 
-## 状态文件（v2）
+## 状态文件（v3）
 
 ```jsonc
 {
-  "version": 2,
+  "version": 3,
   "defaultLevel": "deny",
-  "groups": {
-    "harness 隔离": { "note": "", "updatedAt": "…" }
-  },
+  "groups": { "harness 隔离": { "note": "", "updatedAt": "…" } },
   "objects": {
     "Zcode": { "level": "deny", "note": "", "group": "harness 隔离", "updatedAt": "…" },
     "E:\\资料\\合作档案\\某项目": { "level": "read", "note": "", "group": "", "updatedAt": "…" }
-  }
+  },
+  "profiles": { "严格交付": { "mode": "allowlist", "allow": [{ "path": "E:\\资料\\库", "level": "read" }], "network": "deny", "unknownTool": "deny" } },
+  "sessionOverrides": { "<sessionId>": "严格交付" }
 }
 ```
 
-- **v1 仍可读**：旧的 `harnesses: { key: { level } }` 读入时自动迁移成 `objects`，**级别不丢**；下一次写盘才落成 v2。
+- **旧格式仍可读**：v1 的 `harnesses: { key: { level } }` 与 v2 的 `objects` 读入时自动收敛成 v3（**级别不丢**，`profiles` / `sessionOverrides` 缺省为空）；下一次写盘才落成 v3。
 - 文件缺失 = **全禁**；坏 JSON = **全禁且不覆盖原文件**。
 - 无 BOM；写盘走临时文件 + rename（原子替换）。
 - `state.harnesses` 在内存里保留为只读别名，磁盘上不再写它。
@@ -202,6 +204,19 @@ node bin/gate.mjs log    --limit 20
 
 ---
 
+## 1.0 的稳定性承诺
+
+从 1.0 起，下面这些**只增不破**；要破坏会走 2.0 并附迁移说明：
+
+| 面 | 承诺 |
+|---|---|
+| **状态文件** | 磁盘格式 `v3`；v1 / v2 一律**读时兼容、写时升级**，级别不丢。新增字段只追加，不改已有字段含义。 |
+| **CLI** | `bin/gate.mjs` 的子命令与退出码（`0` 放行 / `3` 拒绝 / `2` 用错或环境错误）不改；新参数只增加。 |
+| **HTTP** | `/__dsh-isolation-gate/*` 现有路径与方法不改；新路由只增加。 |
+| **判定语义** | 三级（deny / read / full）、最长前缀命中、默认禁、fail-closed —— 这四项冻结；改它们等于换产品。 |
+
+**不承诺**：面板的视觉与文案、审计日志的字段可以随版本演进；修 bug 不算破坏性变更。
+
 ## 已知边界（必须明说）
 
 1. **raw fs 与独立进程拦不住。** 任何程序、脚本、别的 agent 不经过 DSH 工具调用就直接读写磁盘，本插件看不到。
@@ -217,16 +232,18 @@ node bin/gate.mjs log    --limit 20
 ## 自测
 
 ```bash
-node test/run-all.mjs     # 4 个套件 · 325 断言 · 全离线（不需要 GUI/dsh）
+node test/run-all.mjs     # 6 个套件 · 396 断言 · 全离线（不需要 GUI/dsh）
 node --check lib/*.js
 ```
 
 | 套件 | 覆盖 |
 |---|---|
-| `run-data-layer.mjs` | 状态 v1→v2 迁移 / 无 BOM / 坏 JSON 不覆盖 / 路径键 / 名单备份 / 分组 / 孤儿清理 |
-| `run-guard.mjs` | 三级×四操作矩阵 / 最长前缀 / 同前缀不误伤 / fail-closed / 真实 I/O 闭环 |
-| `run-routes.mjs` | 11 条路由 / 组级切 / 工具门挂载与干跑 / 选择器缺省 / 级别落盘 / 403/405/400 |
-| `run-client.mjs` | 两座位注册 / 摘要条 / 分组卡片 / 分段控件 / `⋯` 菜单 / 空态 / 交互接线 |
+| `run-data-layer.mjs`（85） | 状态 v1/v2→v3 迁移 / 无 BOM / 坏 JSON 不覆盖 / 路径键 / 名单备份 / 分组 / 孤儿清理 |
+| `run-guard.mjs`（74） | 三级×四操作矩阵 / 最长前缀 / 同前缀不误伤 / fail-closed / 真实 I/O 闭环 |
+| `run-profiles.mjs`（45） | 隔离强度三档 / 白名单与黑名单语义 / 会话绑定只能加严 / 联网软禁 |
+| `run-profiles-runtime.mjs`（11） | 档位文件读取 / 目录绑定 / 坏配置 fail-closed |
+| `run-routes.mjs`（84） | 11 条路由 / 组级切 / 工具门挂载与干跑 / 选择器缺省 / 级别落盘 / 403/405/400 |
+| `run-client.mjs`（97） | 两座位注册 / 摘要条 / 分组卡片 / 分段控件 / `⋯` 菜单 / 空态 / 交互接线 |
 
 ---
 
