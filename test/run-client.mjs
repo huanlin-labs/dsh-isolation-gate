@@ -93,8 +93,26 @@ check('座位 ②：main 整页，key 与行 id 同名', page?.definition.key ==
 check('座位 ③：会话头部小按钮（自带 id，不覆盖别人的格子）', sessionSeat?.definition.id === 'isolation-gate:session', sessionSeat?.definition.id);
 check('三个座位都经 slots.inject 声明后注册', injections.join(',') === 'sidebar.panellist,main,conversation.session.header.utilities', injections.join(','));
 
-const { GateIcon, GateView, Segmented, PANEL_ID, PANEL_ORDER } = moduleExports.__selftest;
+const { GateIcon, GateView, Segmented, PANEL_ID, PANEL_ORDER, profileMode, sessionModeText } = moduleExports.__selftest;
 check('自测出口常量一致', PANEL_ID === 'isolation-gate' && PANEL_ORDER === 6, `${PANEL_ID}/${PANEL_ORDER}`);
+
+// 2026-10-23 户主实测踩坑：把目录加进「严格组」以为是"只禁这个"，结果全盘封死。
+// 这两条锁住「组类型必须点明清单外怎么算」，防止文案再退回含糊说法。
+check(
+  '严格组横幅点明「白名单 · 没列进组一律拒」',
+  profileMode('allowlist').tag === '白名单模式' && profileMode('allowlist').rule.includes('一律拒'),
+  `${profileMode('allowlist').tag} / ${profileMode('allowlist').rule}`,
+);
+check(
+  '宽松组横幅点明「黑名单 · 没列进组照常」',
+  profileMode('blocklist').tag === '黑名单模式' && profileMode('blocklist').rule.includes('照常'),
+  `${profileMode('blocklist').tag} / ${profileMode('blocklist').rule}`,
+);
+check(
+  '会话头部组名旁写清「没点名的怎么算」',
+  sessionModeText({ mode: 'allowlist' }).includes('全拒') && sessionModeText({ mode: 'blocklist' }).includes('照常'),
+  `${sessionModeText({ mode: 'allowlist' })} | ${sessionModeText({ mode: 'blocklist' })}`,
+);
 
 const icon = GateIcon({ size: 18 });
 check('图标是 svg 且带皮肤契约钩子', icon.type === 'svg' && icon.props['data-dsh-panel-entry'] === 'isolation-gate');
