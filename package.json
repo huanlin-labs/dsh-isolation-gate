@@ -1,6 +1,6 @@
 {
   "name": "dsh-isolation-gate",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "门禁 · 目录访问管制（隔离区授权台）：一屏管理「哪些目录受管、各自什么级别」，三级=禁/只读/可读写删；判定同时挂在受管辖通道（bin/gate.mjs）与宿主工具执行门（ctx.tools.guard）上，默认禁、名单缺失一律拒绝（fail-closed）、审计可查、agent 可自查；支持分组批量切、目录选择器与状态文件自动迁移。",
   "keywords": [
     "dsh",
