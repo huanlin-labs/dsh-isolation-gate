@@ -83,7 +83,7 @@ apply(ctx, { statePath, rosterPath, auditPath, backupDir, root: `${scanRoot}\\` 
 
 check('导出 name = dsh-isolation-gate', name === 'dsh-isolation-gate', name);
 check('inject 为空数组（不猜、不探服务）', JSON.stringify(inject) === '["tools"]', JSON.stringify(inject));
-check('注册了 16 条路由', registered.length === 16, registered.map((row) => row.path).join(' '));
+check('注册了 20 条路由', registered.length === 20, registered.map((row) => row.path).join(' '));
 check('路由前缀已改名（/__dsh-isolation-gate/*）', registered.every((row) => row.path.startsWith('/__dsh-isolation-gate/')), registered.map((row) => row.path).join(' '));
 check('每条路由都是 kind=exact', registered.every((row) => row.kind === 'exact'));
 check('只通过 ctx.get 访问 ctx 服务', log.every((entry) => entry.startsWith("ctx.get('webServer')") || entry.startsWith("ctx.get('directoryPicker')")), log.join(' '));
