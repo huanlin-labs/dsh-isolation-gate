@@ -1,3 +1,11 @@
+## 1.6.0 — 2026-10-25
+
+- **MCP 服务器**：`bin/gate-mcp.mjs`（bin 名 `gate-mcp`），stdio + 按行 JSON-RPC，无第三方依赖；支持 initialize / tools/list / tools/call / ping。
+- 三个工具：`gate_check`（路径 + 操作 → 判定）、`gate_status`（受管对象与级别）、`gate_audit`（最近审计）。
+- 定位 **advisory**：MCP 不能硬拦，只做事前询问 + 审计（channel=mcp）；硬拦仍靠前置钩子适配器。
+- 新增 `test/run-mcp.mjs`（16 断言，真子进程 + 真握手），并入 `npm test` → 10 套件。
+- 文档 `docs/MCP.md`（含 Claude Desktop / Cursor / opencode 的注册片段）。
+
 ## 1.5.0 — 2026-10-25
 
 - **Gemini CLI 适配器**：`bin/gate-hook-gemini.mjs`（bin 名 `gate-hook-gemini`）读 `BeforeTool` 事件 JSON，命中受管目标输出 `{"decision":"deny","reason":…}`；坏输入 fail-closed。
