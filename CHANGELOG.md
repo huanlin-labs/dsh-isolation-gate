@@ -1,3 +1,10 @@
+## 1.4.0 — 2026-10-25
+
+- **opencode 适配器**：`bin/gate-plugin-opencode.mjs` 导出 `GatePlugin`，挂 `tool.execute.before`，命中受管目标 `throw` 阻断；审计 `channel: hook/opencode`。
+- 新增 `test/run-opencode-plugin.mjs`（11 断言），并入 `npm test` → 8 套件。
+- 文档 `docs/OPENCODE.md`（含诚实标注：本机 opencode 1.18.29 无模型凭据，未做真机会话验证）。
+- README 跨 harness 表：opencode 标为「代码+单测通过，未真机验证」。
+
 ## 1.3.0 — 2026-10-25
 
 - **跨 harness**：新增 Claude Code `PreToolUse` 适配器 `bin/gate-hook-claude.mjs`（`gate-hook-claude` 命令）——同一套名单 / 级别 / 审计，命中受管目标返回 `permissionDecision: deny`。
