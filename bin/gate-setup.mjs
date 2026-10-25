@@ -4,7 +4,7 @@
  *
  *   gate-setup <harness> [--write] [--home <dir>] [--project <dir>] [--backup <dir>]
  *
- * harness：claude | gemini | opencode | mcp
+ * harness：claude | zcode | gemini | opencode | mcp
  * 默认只打印「要写什么、写到哪」（dry-run）；加 --write 才真正落盘。
  * 落盘前会把原文件备份到 --backup 目录（默认 <home>/gate-setup-backup/<时间戳>/）。
  *
@@ -22,11 +22,12 @@ const SELF = resolve(import.meta.dirname, '..');
 const NODE = process.execPath;
 
 function usage() {
-  return `用法：gate-setup <claude|gemini|opencode|mcp> [--write] [--home <dir>] [--project <dir>] [--backup <dir>]
+  return `用法：gate-setup <claude|zcode|gemini|opencode|mcp> [--write] [--home <dir>] [--project <dir>] [--backup <dir>]
 
   claude    写 ~/.claude/settings.json 的 hooks.PreToolUse
   gemini    写 ~/.gemini/settings.json 的 hooks.BeforeTool
   opencode  写 ~/.config/opencode/opencode.json 的 plugin 数组
+  zcode     写 ~/.zcode/cli/config.json 的 hooks.events.PreToolUse（与 Claude Code 同协议）
   mcp       写 ~/.cursor/mcp.json 的 mcpServers（Cursor / Windsurf 通用形状）
 
 默认 dry-run：只打印计划，不落盘。加 --write 才写。`;
@@ -57,6 +58,29 @@ export function planFor(harness, options = {}) {
         const list = Array.isArray(draft.hooks.PreToolUse) ? draft.hooks.PreToolUse : [];
         if (!JSON.stringify(list).includes('gate-hook-claude.mjs')) list.push(entry);
         draft.hooks.PreToolUse = list;
+        return draft;
+      },
+    };
+  }
+
+  if (harness === 'zcode') {
+    const file = join(home, '.zcode', 'cli', 'config.json');
+    const entry = {
+      matcher: '*',
+      hooks: [{ type: 'process', command: NODE, args: [join(SELF, 'bin', 'gate-hook-claude.mjs')], timeoutMs: 10000 }],
+    };
+    return {
+      harness,
+      file,
+      describe: 'ZCode PreToolUse 钩子（硬拦；与 Claude Code 同协议，复用同一适配器）',
+      merge: (data) => {
+        const draft = structuredClone(data ?? {});
+        draft.hooks = draft.hooks ?? {};
+        draft.hooks.enabled = true;
+        draft.hooks.events = draft.hooks.events ?? {};
+        const list = Array.isArray(draft.hooks.events.PreToolUse) ? draft.hooks.events.PreToolUse : [];
+        if (!JSON.stringify(list).includes('gate-hook-claude.mjs')) list.push(entry);
+        draft.hooks.events.PreToolUse = list;
         return draft;
       },
     };

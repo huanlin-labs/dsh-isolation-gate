@@ -62,8 +62,15 @@ try {
     check('PreToolUse 仍只有 1 条', parsed.hooks.PreToolUse.length === 1, String(parsed.hooks.PreToolUse.length));
   }
 
-  console.log('\n【4】gemini / opencode / mcp 三个目标');
+  console.log('\n【4】zcode / gemini / opencode / mcp 四个目标');
   {
+    const zcode = runSetup('zcode', { home, backup, write: true });
+    const zcodeJson = JSON.parse(readFileSync(zcode.file, 'utf8'));
+    check('zcode 打开 hooks.enabled', zcodeJson.hooks?.enabled === true);
+    check('zcode 写入 PreToolUse', Array.isArray(zcodeJson.hooks?.events?.PreToolUse) && zcodeJson.hooks.events.PreToolUse.length === 1);
+    check('zcode 复用 claude 适配器', JSON.stringify(zcodeJson).includes('gate-hook-claude.mjs'));
+    check('zcode 用 process 执行器', zcodeJson.hooks.events.PreToolUse[0].hooks[0].type === 'process');
+
     const gemini = runSetup('gemini', { home, backup, write: true });
     const geminiJson = JSON.parse(readFileSync(gemini.file, 'utf8'));
     check('gemini 写入 BeforeTool', Array.isArray(geminiJson.hooks?.BeforeTool));
