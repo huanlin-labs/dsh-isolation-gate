@@ -1,3 +1,11 @@
+## 1.7.0 — 2026-10-25
+
+- **通用前置钩子适配器**：`bin/gate-hook-generic.mjs`（bin 名 `gate-hook-generic`）——任何「工具执行前调命令 + stdin 喂 JSON」的 harness 都能直接接。
+- 字段容错：`GATE_TOOL_KEYS` / `GATE_ARGS_KEYS` / `GATE_OP_KEYS` 可配；默认同时认 snake_case 与 camelCase。
+- 拦截输出四选一（`GATE_DENY_STYLE`）：exit2（默认）/ json-claude / json-gemini / text。
+- 新增 `test/run-hook-generic.mjs`（21 断言），并入 `npm test` → 11 套件。
+- 文档 `docs/GENERIC-HOOK.md` 与 `docs/CODEX.md`（Codex 钩子能力随版本变化，含自检步骤；标注未真机验证）。
+
 ## 1.6.0 — 2026-10-25
 
 - **MCP 服务器**：`bin/gate-mcp.mjs`（bin 名 `gate-mcp`），stdio + 按行 JSON-RPC，无第三方依赖；支持 initialize / tools/list / tools/call / ping。

@@ -103,7 +103,8 @@ dsh plugin --profile desktop add dsh-isolation-gate
 | opencode | 🧪 v1.4 起（代码+单测通过，未真机验证） | `.opencode/plugins/gate.mjs` 或 `opencode.json` 的 `plugin`；见 [docs/OPENCODE.md](docs/OPENCODE.md) |
 | Gemini CLI | 🧪 v1.5 起（代码+单测通过，未真机验证） | `.gemini/settings.json` 的 `BeforeTool` → `bin/gate-hook-gemini.mjs`，见 [docs/GEMINI-CLI.md](docs/GEMINI-CLI.md) |
 | 任何支持 MCP 的 harness（Cursor / Windsurf / Codex / Claude Desktop …） | ⚠️ advisory（只能问，不能硬拦） | stdio MCP 服务器 `gate-mcp`，见 [docs/MCP.md](docs/MCP.md) |
-| 其它（Codex 原生钩子等） | 🚧 待适配 | 有工具前置钩子的，照上面两个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
+| Codex CLI | 🧪 钩子能力随版本变（先自检再接线） | 通用适配器 `gate-hook-generic`，见 [docs/CODEX.md](docs/CODEX.md) |
+| 任何「stdin JSON + 退出码」钩子 | ✅ v1.7 起通用 | `gate-hook-generic`（`GATE_DENY_STYLE` 可选 exit2 / json-claude / json-gemini / text），见 [docs/GENERIC-HOOK.md](docs/GENERIC-HOOK.md) | 有工具前置钩子的，照上面两个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
 
 **共用同一份策略**：名单 / 级别 / 审计默认都在 `.agents` 那三个文件里，DSH 面板里改完，Claude Code 下一次工具调用立刻按新级别判。
 所有判定都写审计（`channel: hook/claude-code`），所以"谁在什么时候试图碰哪个目录"两边一本账。
