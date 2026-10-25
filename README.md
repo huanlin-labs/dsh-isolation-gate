@@ -92,6 +92,21 @@ dsh plugin --profile desktop add dsh-isolation-gate
 
 > 用 gate_status 看看现在什么被禁；确认 D:\仓库\合作档案 还是禁的话，帮我提个只读申请，理由写"核对合作档案里的结论"。
 
+## 在别的 harness 里用（Claude Code 已支持）
+
+策略引擎是纯 Node、跟 DSH 无关；别的 harness 只多一层**适配器**（读它的事件、喂给同一套判定）。
+
+| harness | 状态 | 怎么接 |
+| --- | --- | --- |
+| DSH | ✅ 原生 | 装插件（本文其余部分） |
+| Claude Code | ✅ v1.3 起 | `PreToolUse` hook → `bin/gate-hook-claude.mjs`，见 [docs/CLAUDE-CODE.md](docs/CLAUDE-CODE.md) |
+| 其它（opencode / Codex / …） | 🚧 待适配 | 有工具前置钩子的，照 Claude Code 那个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
+
+**共用同一份策略**：名单 / 级别 / 审计默认都在 `.agents` 那三个文件里，DSH 面板里改完，Claude Code 下一次工具调用立刻按新级别判。
+所有判定都写审计（`channel: hook/claude-code`），所以"谁在什么时候试图碰哪个目录"两边一本账。
+
+**边界（写在前面）**：适配器只管那个 harness 的工具调用——你在终端里手动 `cat` 它不管；`Bash` 只靠命令行里的绝对路径判断，`cd` 后走相对路径会漏判。
+
 ## 安装
 
 ### 路线 A：`dsh plugin add`（推荐，profile 自动追加一行）

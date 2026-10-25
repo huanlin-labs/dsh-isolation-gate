@@ -1,3 +1,11 @@
+## 1.3.0 — 2026-10-25
+
+- **跨 harness**：新增 Claude Code `PreToolUse` 适配器 `bin/gate-hook-claude.mjs`（`gate-hook-claude` 命令）——同一套名单 / 级别 / 审计，命中受管目标返回 `permissionDecision: deny`。
+- 工具名 → 操作映射：Read/Glob/Grep/LS→read；Write/Edit/MultiEdit/NotebookEdit→write；Bash/PowerShell→write（扫描命令行里的绝对路径）。
+- 环境变量可覆盖策略文件：`GATE_STATE_PATH` / `GATE_ROSTER_PATH` / `GATE_AUDIT_PATH` / `GATE_ROOT`。
+- 新增测试套件 `test/run-hook-claude.mjs`（12 断言：拦截 / 放行 / 坏输入 fail-closed / 审计通道）。
+- 文档 `docs/CLAUDE-CODE.md`；README 增「在别的 harness 里用」。
+
 ## 1.1.2 — 2026-10-25
 
 - 补 npm 搜索关键词（dsh / dsh-plugin / access-control / sandbox / audit-log 等 13 个），便于在 npm 搜索里被找到；代码无变化。
