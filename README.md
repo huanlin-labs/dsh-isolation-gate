@@ -111,6 +111,26 @@ dsh plugin --profile desktop add dsh-isolation-gate
 
 **边界（写在前面）**：适配器只管那个 harness 的工具调用——你在终端里手动 `cat` 它不管；`Bash` 只靠命令行里的绝对路径判断，`cd` 后走相对路径会漏判。
 
+## 各 harness 支持度（诚实矩阵）
+
+「门禁」的本质是**执行前拦住**。有没有前置拦截点，决定了它是门禁还是记事本：
+
+| harness | 拦截点 | 能硬拦？ | 验证状态 |
+| --- | --- | --- | --- |
+| **DSH** | `ctx.tools.guard`（进程内，能看到工具参数） | ✅ | **真机验证**（还有面板 / 7 个工具 / 分组 / 审计，唯一完整形态） |
+| **pi** | extension 事件 `tool_call`（文档原文「authorize or modify a tool call」） | ✅ | ⚠️ 仅文档核对，未真机（本机未装 pi），见 `docs/PI.md` |
+| **Claude Code** | `PreToolUse` hook 返回 deny | ✅ | 单测通过，未真机 |
+| **opencode** | `tool.execute.before` 抛错阻断 | ✅ | 单测通过，未真机 |
+| **Gemini CLI** | `BeforeTool` → `decision:deny` | ✅ | 单测通过，未真机 |
+| **通用钩子** | 执行前调命令 + stdin 喂 JSON（`gate-hook-generic`） | ✅（前提成立时） | 单测 |
+| **MCP 客户端** | 模型**主动**调用 `gate_check` | ❌ **拦不住**，只有建议 + 审计留痕 | 真握手 |
+| **Codex** | 钩子随版本（`pre_tool` 或仅 `notify`） | ⚠️ 不确定 | 未验证，见 `docs/CODEX.md` |
+
+**怎么读这张表**：
+- 「能硬拦」= 模型即使不想配合也过不去；只有这一类才算门禁。
+- MCP 一栏写的是 **advisory**：适合 Cursor / Windsurf / Claude Desktop 这类只有 MCP 的客户端，但它**不能替代**前置钩子，别把它当门禁卖点。
+- opencode / Gemini CLI / pi 三家代码或文档已就绪但**没有真机跑过**，标 experimental；真机验证前不要写「支持」。
+
 ## 安装
 
 ### 路线 A：`dsh plugin add`（推荐，profile 自动追加一行）
