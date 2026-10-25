@@ -101,6 +101,7 @@ dsh plugin --profile desktop add dsh-isolation-gate
 | DSH | ✅ 原生 | 装插件（本文其余部分） |
 | Claude Code | ✅ v1.3 起 | `PreToolUse` hook → `bin/gate-hook-claude.mjs`，见 [docs/CLAUDE-CODE.md](docs/CLAUDE-CODE.md) |
 | opencode | 🧪 v1.4 起（代码+单测通过，未真机验证） | `.opencode/plugins/gate.mjs` 或 `opencode.json` 的 `plugin`；见 [docs/OPENCODE.md](docs/OPENCODE.md) |
+| Gemini CLI | 🧪 v1.5 起（代码+单测通过，未真机验证） | `.gemini/settings.json` 的 `BeforeTool` → `bin/gate-hook-gemini.mjs`，见 [docs/GEMINI-CLI.md](docs/GEMINI-CLI.md) |
 | 其它（Codex / …） | 🚧 待适配 | 有工具前置钩子的，照上面两个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
 
 **共用同一份策略**：名单 / 级别 / 审计默认都在 `.agents` 那三个文件里，DSH 面板里改完，Claude Code 下一次工具调用立刻按新级别判。

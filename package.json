@@ -1,6 +1,6 @@
 {
   "name": "dsh-isolation-gate",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Access gate for AI coding harnesses (DSH plugin + Claude Code hook): per-directory deny/read/full, roster groups, audit log, model-facing tools with owner-approved widening.",
   "keywords": [
     "dsh",
@@ -35,7 +35,8 @@
   },
   "bin": {
     "gate": "bin/gate.mjs",
-    "gate-hook-claude": "bin/gate-hook-claude.mjs"
+    "gate-hook-claude": "bin/gate-hook-claude.mjs",
+    "gate-hook-gemini": "bin/gate-hook-gemini.mjs"
   },
   "files": [
     "lib",

@@ -22,6 +22,7 @@ const suites = [
   ['客户端（槽位 / 渲染 / 交互）', join(import.meta.dirname, 'run-client.mjs')],
   ['Claude Code 适配器（PreToolUse 拦截 / 放行 / fail-closed）', join(import.meta.dirname, 'run-hook-claude.mjs')],
   ['opencode 适配器（tool.execute.before 拦截 / 放行）', join(import.meta.dirname, 'run-opencode-plugin.mjs')],
+  ['Gemini CLI 适配器（BeforeTool 拦截 / fail-closed）', join(import.meta.dirname, 'run-hook-gemini.mjs')],
 ];
 
 const results = [];

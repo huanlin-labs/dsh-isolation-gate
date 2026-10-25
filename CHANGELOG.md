@@ -1,3 +1,10 @@
+## 1.5.0 — 2026-10-25
+
+- **Gemini CLI 适配器**：`bin/gate-hook-gemini.mjs`（bin 名 `gate-hook-gemini`）读 `BeforeTool` 事件 JSON，命中受管目标输出 `{"decision":"deny","reason":…}`；坏输入 fail-closed。
+- 工具映射：read_file/read_many_files/list_directory/glob/search_file_content→read；write_file/replace/run_shell_command→write。
+- 新增 `test/run-hook-gemini.mjs`（13 断言），并入 `npm test` → 9 套件。
+- 文档 `docs/GEMINI-CLI.md`（含 settings.json 片段；标注本机未装 gemini CLI、未真机验证）。
+
 ## 1.4.0 — 2026-10-25
 
 - **opencode 适配器**：`bin/gate-plugin-opencode.mjs` 导出 `GatePlugin`，挂 `tool.execute.before`，命中受管目标 `throw` 阻断；审计 `channel: hook/opencode`。
