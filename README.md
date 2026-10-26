@@ -374,3 +374,16 @@ npx dsh-isolation-gate ui        # 打开 http://127.0.0.1:19390/
 - 能整组切档；只监听 127.0.0.1，写操作需页面内一次性 token；
 - 写的是同一份状态文件（`D:\.agents\门禁-授权.json`），所以 **dsh 面板与其它 harness 共用一套策略**；
 - 改完要让对应 harness **新开会话**（ZCode 有 session 快照；其它同理拿最新状态）。
+
+## 支持矩阵（真实验证状态见 [docs/VERIFY.md](docs/VERIFY.md)）
+
+| harness | 拦法 | 硬拦？ |
+|---|---|---|
+| dsh | 原生工具闸门 | ✅ |
+| Claude Code | PreToolUse 钩子 | ✅ |
+| ZCode | PreToolUse 钩子 | ✅ |
+| opencode | 进程内插件 | ✅ |
+| pi | 扩展 tool_call | ✅ |
+| Gemini CLI | BeforeTool 钩子 | ✅ |
+| Codex CLI | MCP 工具 | ⚠️ advisory（无钩子） |
+| Cursor / Windsurf | MCP（`setup mcp`） | ⚠️ advisory |

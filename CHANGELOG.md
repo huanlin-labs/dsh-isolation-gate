@@ -1,3 +1,7 @@
+## 1.11.1 — 2026-10-26
+
+真机补齐：opencode 1.18.29 插件已装并验到 deny 拦截；Gemini CLI 0.65.0 安装 + BeforeTool 钩子已写；新增 docs/VERIFY.md 与 README 支持矩阵。
+
 ## 1.11.0 — 2026-10-26
 
 - **跨平台**：默认状态/名单/审计目录不再写死 D 盘 —— Windows 有 `D:\.agents` 时沿用，否则 `~/.agents`；扫描根默认系统盘根。
