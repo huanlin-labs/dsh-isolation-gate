@@ -1,7 +1,5 @@
 ![Isolation Gate](docs/brand/banner.png)
 
-<p align="center"><img src="docs/banner.svg" alt="门禁 · dsh-isolation-gate" width="100%"></p>
-
 # 门禁 · dsh-isolation-gate
 
 [![npm version](https://img.shields.io/npm/v/dsh-isolation-gate.svg)](https://www.npmjs.com/package/dsh-isolation-gate)
