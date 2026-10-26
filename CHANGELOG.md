@@ -1,3 +1,9 @@
+## 1.11.0 — 2026-10-26
+
+- **跨平台**：默认状态/名单/审计目录不再写死 D 盘 —— Windows 有 `D:\.agents` 时沿用，否则 `~/.agents`；扫描根默认系统盘根。
+- **Codex 接线**：`gate-setup codex` 写 `~/.codex/config.toml` 的 `mcp_servers`（advisory；Codex 无前置钩子，不能硬拦）。
+- **`--verify`**：`gate-setup <harness> --verify` 一键检查接线是否真的落盘。
+- **CI**：GitHub Actions 三平台 × Node 20/22/24 跑全部套件；README 加 stars / CI 徽章；英文 README 补齐。
 ## 1.10.1 — 2026-10-26
 
 加兼容性标签（npm keywords / GitHub topics）与 `gate-ui` 命令别名：明确对 Claude Code / ZCode / opencode / pi / Codex / Cursor / MCP 通用。

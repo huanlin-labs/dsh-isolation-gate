@@ -1,33 +1,18 @@
-name: ci
-
+name: test
 on:
   push:
-    branches: [main]
   pull_request:
-  workflow_dispatch:
-
 jobs:
-  syntax:
-    name: syntax (ubuntu)
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22, 24]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.11'
-      - name: node --check
-        run: |
-          for f in lib/*.js bin/*.mjs test/*.mjs; do node --check "$f"; done
-
-  self-test:
-    name: self-test (windows)
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20.11'
-      - name: Prepare temp dir (tests use D:\\临时)
-        run: New-Item -ItemType Directory -Force 'D:\\临时' | Out-Null
-      - name: Self-test suites
-        run: node test/run-all.mjs
+          node-version: ${{ matrix.node }}
+      - run: node test/run-all.mjs

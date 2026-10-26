@@ -227,3 +227,17 @@ node --check lib/*.js
 ## License
 
 MIT · see [LICENSE](./LICENSE).
+
+## Works with every harness
+
+```bash
+npx dsh-isolation-gate setup claude   # Claude Code PreToolUse hook (hard block)
+npx dsh-isolation-gate setup zcode    # ZCode hook (same protocol)
+npx dsh-isolation-gate setup opencode # in-process plugin (hard block)
+npx dsh-isolation-gate setup pi       # pi extension (hard block)
+npx dsh-isolation-gate setup codex    # MCP server (advisory only: Codex has no pre-tool hook)
+npx dsh-isolation-gate ui             # local settings page: groups + deny/read/full
+```
+
+Default state paths follow the OS (`~/.agents` on non-Windows, `D:\.agents` when present on Windows).
+Override with `GATE_STATE_PATH` / `GATE_ROSTER_PATH` / `GATE_ROOT`.

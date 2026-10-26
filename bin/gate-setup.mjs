@@ -30,8 +30,10 @@ function usage() {
   zcode     写 ~/.zcode/cli/config.json 的 hooks.events.PreToolUse（与 Claude Code 同协议）
   pi        写 ~/.pi/extensions/isolation-gate.js（转发到 gate-plugin-pi.mjs，进程内硬拦）
   mcp       写 ~/.cursor/mcp.json 的 mcpServers（Cursor / Windsurf 通用形状）
+  codex     写 ~/.codex/config.toml 的 mcp_servers（advisory，不能硬拦）
 
-默认 dry-run：只打印计划，不落盘。加 --write 才写。`;
+默认 dry-run：只打印计划，不落盘。加 --write 才写。
+加 --verify 只体检：检查目标文件里是否已有本插件的接线（exit 0=全部就绪）。`;
 }
 
 export function hookCommand(bin) {
@@ -145,6 +147,25 @@ export function planFor(harness, options = {}) {
     };
   }
 
+  if (harness === 'codex') {
+    const file = join(home, '.codex', 'config.toml');
+    const block = [
+      '',
+      '# 门禁 · MCP（由 gate-setup 写入；删除本节即停用）',
+      '[mcp_servers.isolation-gate]',
+      `command = ${JSON.stringify(NODE)}`,
+      `args = [${JSON.stringify(join(SELF, 'bin', 'gate-mcp.mjs'))}]`,
+      '',
+    ].join('\n');
+    return {
+      harness,
+      file,
+      describe: 'Codex MCP 服务器（advisory：Codex 没有前置钩子，只能提供工具、不能硬拦）',
+      appendBlock: block,
+      marker: 'mcp_servers.isolation-gate',
+    };
+  }
+
   if (harness === 'mcp') {
     const file = join(home, '.cursor', 'mcp.json');
     return {
@@ -211,6 +232,28 @@ export function runSetup(harness, options = {}) {
     return result;
   }
 
+  if (plan.appendBlock !== undefined) {
+    const exists = existsSync(plan.file);
+    const current = exists ? readFileSync(plan.file, 'utf8') : '';
+    const already = current.includes(plan.marker);
+    const next = already ? current : `${current}${current.endsWith('\n') || current === '' ? '' : '\n'}${plan.appendBlock}`;
+    const result = {
+      harness: plan.harness,
+      describe: plan.describe,
+      file: plan.file,
+      existed: exists,
+      written: false,
+      backup: null,
+      preview: { already, block: plan.appendBlock },
+    };
+    if (!options.write || already) return result;
+    result.backup = backupFile(plan.file, options.backup ?? join(options.home ?? homedir(), 'gate-setup-backup'));
+    mkdirSync(dirname(plan.file), { recursive: true });
+    writeFileSync(plan.file, next, 'utf8');
+    result.written = true;
+    return result;
+  }
+
   const { exists, data } = readJsonIfExists(plan.file);
   const merged = plan.merge(data);
   const result = {
@@ -229,6 +272,25 @@ export function runSetup(harness, options = {}) {
   writeJsonAtomic(plan.file, merged);
   result.written = true;
   return result;
+}
+
+export function verifySetup(harness, options = {}) {
+  const plan = planFor(harness, options);
+  const fallback = {
+    pi: 'gate-plugin-pi.mjs',
+    opencode: 'gate-plugin-opencode.mjs',
+    gemini: 'gate-hook-gemini.mjs',
+    mcp: 'isolation-gate',
+    claude: 'gate-hook-claude.mjs',
+    zcode: 'gate-hook-claude.mjs',
+  }[harness];
+  const marker = plan.marker ?? fallback ?? '';
+  if (!existsSync(plan.file)) {
+    return { harness, file: plan.file, ok: false, detail: '目标文件不存在（还没接线）' };
+  }
+  const text = readFileSync(plan.file, 'utf8');
+  const ok = marker !== '' && text.includes(marker);
+  return { harness, file: plan.file, ok, detail: ok ? `已接线（标记 ${marker}）` : `未找到接线标记：${marker}` };
 }
 
 function main() {
@@ -251,6 +313,14 @@ function main() {
     project: readFlag('--project'),
     backup: readFlag('--backup'),
   };
+
+  if (argv.includes('--verify')) {
+    const check = verifySetup(harness, options);
+    console.log(`${check.ok ? '✔' : '✘'} 【${check.harness}】${check.file}`);
+    console.log(`  ${check.detail}`);
+    process.exitCode = check.ok ? 0 : 1;
+    return;
+  }
 
   let result;
   try {
