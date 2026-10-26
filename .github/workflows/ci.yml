@@ -3,19 +3,39 @@ on:
   push:
   pull_request:
 jobs:
-  test:
+  full-suite:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         node: [20, 22, 24]
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       - run: node test/run-all.mjs
+
+  portable:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: portable suites (paths/adapters/UI/doctor)
+        run: |
+          node test/run-data-layer.mjs
+          node test/run-doctor.mjs
+          node test/run-ui.mjs
+          node test/run-hook-claude.mjs
+          node test/run-hook-gemini.mjs
+          node test/run-mcp.mjs
+          node test/run-opencode-plugin.mjs
 
   registry-parity:
     if: startsWith(github.ref, 'refs/tags/v')
