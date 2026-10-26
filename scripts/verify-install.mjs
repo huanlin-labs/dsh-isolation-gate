@@ -61,6 +61,11 @@ try {
   if (!/已接线 7\/7/.test(fixed)) fail(`--fix 后应为 7/7，实际：${fixed.trim().split('\n').pop()}`);
   else console.log('✔ --fix ⇒ 7/7');
 
+  const gateBin = join(pkgDir, 'bin', 'gate.mjs');
+  const installedVersion = runNode([gateBin, '--version'], work).trim();
+  if (installedVersion !== `dsh-isolation-gate ${installed.version}`) fail(`装上后 gate --version 报的是「${installedVersion}」`);
+  else console.log(`✔ 装上后 gate --version = ${installedVersion}`);
+
   const again = runNode([setup, 'doctor', '--home', home], work);
   if (!/已接线 7\/7/.test(again)) fail(`再查应为 7/7，实际：${again.trim().split('\n').pop()}`);
   else console.log('✔ 再查仍 7/7（可重复）');

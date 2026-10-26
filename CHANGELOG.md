@@ -1,3 +1,7 @@
+## 1.13.5 — 2026-10-26
+
+- `verify:install` 再多一步：装完后用**装上去的** `bin/gate.mjs --version` 核对版本，证明受管通道入口在真实安装后也能跑（CI 三平台）。
+
 ## 1.13.4 — 2026-10-26
 
 - **修复 macOS 上 `gate-setup` 完全静默不出输出**：入口判定用 `resolve()` 比路径，而 macOS 的 `/var` 是 `/private/var` 的符号链接，两边永远不相等 ⇒ `main()` 从不执行。改为比 `realpathSync`。
