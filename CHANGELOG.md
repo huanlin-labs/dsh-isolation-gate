@@ -1,3 +1,7 @@
+## 1.12.12 — 2026-10-26
+
+- docs/VERIFY.md 新增「作者机实测快照」：装机链路、目录已加载、真实拦截一次、doctor 7/7、npm 装得上；并说明为何 Service 目录里看不到它。
+
 ## 1.12.11 — 2026-10-26
 
 - 新增 `scripts/prepublish-check.mjs` 并挂到 `prepublishOnly`：版本与 `lib/index.js` 一致、CHANGELOG 有本条、README 图片都存在、相对上个 tag 确有文件变化——防「发了等于没改」。
