@@ -25,6 +25,7 @@ const suites = [
   ['Gemini CLI 适配器（BeforeTool 拦截 / fail-closed）', join(import.meta.dirname, 'run-hook-gemini.mjs')],
   ['通用前置钩子（字段容错 / 三种拦截输出）', join(import.meta.dirname, 'run-hook-generic.mjs')],
   ['MCP 服务器（JSON-RPC 握手 / 工具调用）', join(import.meta.dirname, 'run-mcp.mjs')],
+  ['一键接线器（dry-run / 合并 / 幂等 / 多 harness）', join(import.meta.dirname, 'run-setup.mjs')],
 ];
 
 const results = [];

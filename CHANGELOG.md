@@ -1,3 +1,10 @@
+## 1.8.0 — 2026-10-26
+
+- **一键接线器**：`bin/gate-setup.mjs`（bin 名 `gate-setup`）——`gate-setup <claude|zcode|gemini|opencode|mcp>`，默认 dry-run，`--write` 才落盘并自动备份；幂等（重复执行不重复追加）。
+- **ZCode 支持**：ZCode 的 `PreToolUse` 与 Claude Code 同协议（`hookSpecificOutput.permissionDecision`），直接复用 `gate-hook-claude.mjs`；`gate-setup zcode` 写 `~/.zcode/cli/config.json`（`hooks.enabled=true` + `events.PreToolUse`，process 执行器）。
+- **诚实能力矩阵**：README 新增「各 harness 支持度」表，按「能硬拦 / 只能建议」分档；MCP 明确标注**拦不住**，opencode / Gemini / pi 标 experimental。
+- 新增 `docs/ZCODE.md`、`docs/PI.md`；新增 `test/run-setup.mjs`（21 断言）→ **12 套件**。
+
 ## 1.7.0 — 2026-10-25
 
 - **通用前置钩子适配器**：`bin/gate-hook-generic.mjs`（bin 名 `gate-hook-generic`）——任何「工具执行前调命令 + stdin 喂 JSON」的 harness 都能直接接。
