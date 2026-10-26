@@ -1,3 +1,8 @@
+## 1.12.6 — 2026-10-26
+
+- `topSegmentOf` 在非 Windows 上按 POSIX 根解析（不再用 `win32.parse`），名判定的“根下第一段”语义在 macOS/Linux 上成立。
+- 测试夹具改为平台无关（`tmpdir()`、平台样例路径）。`run-guard` 仍是 Windows 本机套件（一项路径对象断言待改）。
+
 ## 1.12.5 — 2026-10-26
 
 - README 加品牌横幅（docs/brand/banner.png + PHILOSOPHY.md）。
