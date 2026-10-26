@@ -15,6 +15,7 @@
 
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 import {
@@ -69,8 +70,9 @@ try {
   // ---------- 状态文件 ----------
   check('缺省级别 = deny', DEFAULT_LEVEL === 'deny', DEFAULT_LEVEL);
   check('三级为 deny/read/full', LEVELS.join(',') === 'deny,read,full', LEVELS.join(','));
-  check('默认状态文件落点已改名', DEFAULT_STATE_PATH === 'D:\\.agents\\门禁-授权.json', DEFAULT_STATE_PATH);
-  check('默认名单落点已改名', DEFAULT_ROSTER_PATH === 'D:\\.agents\\门禁-名单.txt', DEFAULT_ROSTER_PATH);
+  const expectedBase = process.platform === 'win32' && existsSync('D:\\.agents') ? 'D:\\.agents' : join(homedir(), '.agents');
+check('默认状态文件落点正确', DEFAULT_STATE_PATH === join(expectedBase, '门禁-授权.json'), DEFAULT_STATE_PATH);
+  check('默认名单落点正确', DEFAULT_ROSTER_PATH === join(expectedBase, '门禁-名单.txt'), DEFAULT_ROSTER_PATH);
 
   const missing = readState(statePath);
   check('状态文件不存在 ⇒ 全禁（不报错）', missing.ok === true && missing.exists === false && levelOf(missing.state, 'Zcode') === 'deny');
