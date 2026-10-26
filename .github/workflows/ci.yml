@@ -16,3 +16,13 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: node test/run-all.mjs
+
+  registry-parity:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run verify:publish
