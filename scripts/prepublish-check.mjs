@@ -52,7 +52,13 @@ else ok.push(`README 图片引用全部存在（${imageRefs.size} 个）`);
 
 // 4. 相对上一个 tag，确实有文件内容变化
 try {
-  const lastTag = execFileSync('git', ['describe', '--tags', '--abbrev=0'], { cwd: root, encoding: 'utf8' }).trim();
+  const tags = execFileSync('git', ['tag', '--list', 'v*', '--sort=-v:refname'], { cwd: root, encoding: 'utf8' })
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .filter((tag) => tag !== `v${pkg.version}`);
+  if (tags.length === 0) throw new Error('no previous tag');
+  const lastTag = tags[0];
   const changed = execFileSync('git', ['diff', '--name-only', lastTag, 'HEAD'], { cwd: root, encoding: 'utf8' })
     .trim()
     .split('\n')
