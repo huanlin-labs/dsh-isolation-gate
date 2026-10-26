@@ -1,3 +1,7 @@
+## 1.12.4 — 2026-10-26
+
+- 修复 `normalizeRoot` 在 macOS/Linux 上错误追加反斜杠，导致 `listRootDirs` 在非 Windows 上失败。
+
 ## 1.12.3 — 2026-10-26
 
 - 新增 `npm run verify:publish`：发布后直接查 registry 原始 JSON 直到版本出现（防 1.12.1 那种“publish 报成功但没落地”）。
