@@ -1,3 +1,7 @@
+## 1.12.11 — 2026-10-26
+
+- 新增 `scripts/prepublish-check.mjs` 并挂到 `prepublishOnly`：版本与 `lib/index.js` 一致、CHANGELOG 有本条、README 图片都存在、相对上个 tag 确有文件变化——防「发了等于没改」。
+
 ## 1.12.10 — 2026-10-26
 
 - 修正 1.12.9：上一版的去重没生效（正则未命中全角字符），README 仍有两张横幅；本版用正则删掉 SVG 那一行，并验证引用为 0。

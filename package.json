@@ -1,6 +1,6 @@
 {
   "name": "dsh-isolation-gate",
-  "version": "1.12.10",
+  "version": "1.12.11",
   "description": "Access gate for AI coding harnesses (DSH plugin + Claude Code hook): per-directory deny/read/full, roster groups, audit log, model-facing tools with owner-approved widening.",
   "keywords": [
     "dsh",
@@ -72,7 +72,9 @@
     "gate": "node bin/gate.mjs",
     "release:check": "node scripts/release-sync.mjs",
     "verify:publish": "node scripts/verify-publish.mjs",
-    "verify:install": "node scripts/verify-install.mjs"
+    "verify:install": "node scripts/verify-install.mjs",
+    "prepublishOnly": "node scripts/prepublish-check.mjs",
+    "check:release": "node scripts/prepublish-check.mjs"
   },
   "dsh": {
     "bundle": {
