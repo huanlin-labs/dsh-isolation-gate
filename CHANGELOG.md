@@ -1,3 +1,12 @@
+## 1.13.0 — 2026-10-26
+
+第一个公开里程碑（汇总 1.12.4–1.12.12）。不是新功能，是把这一段的修复与证据收拢成一个可引用的版本。
+
+- 跨平台：`normalizeRoot` / `topSegmentOf` 修复 POSIX 路径（macOS / Linux 上不再拼错分隔符，1.12.4 / 1.12.6）。
+- 可验证性：`npm run verify:install` —— 打包、空目录真装、`doctor` 0/7 → `--fix` 7/7 → 复查 7/7（1.12.7）。
+- 发布门禁：`scripts/prepublish-check.mjs` 挂 `prepublishOnly`，拒绝版本不一致、CHANGELOG 缺条、README 图片缺失、以及「空改动」（1.12.11）。
+- 文档：`docs/EXAMPLES.md` 一页走通（真实输出）；`docs/VERIFY.md` 加作者机实测快照（1.12.8 / 1.12.12）。
+- README 首屏去重、图片引用修正（1.12.9 / 1.12.10）。
 ## 1.12.12 — 2026-10-26
 
 - docs/VERIFY.md 新增「作者机实测快照」：装机链路、目录已加载、真实拦截一次、doctor 7/7、npm 装得上；并说明为何 Service 目录里看不到它。
