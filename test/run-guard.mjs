@@ -61,6 +61,9 @@ function runCli(args, label) {
   return record;
 }
 
+const IS_WIN = process.platform === 'win32';
+const HARNESS_DIR = IS_WIN ? ('D:\\' + 'Zcode') : ('/' + 'Zcode');
+const OUTSIDE_DIR = IS_WIN ? ('D:\\' + '工作区') : '/tmp';
 const missingRosterError = (record) => /名单不可用/.test(`${record.stdout}${record.stderr}`);
 
 // ===================== ① 判定矩阵 =====================
@@ -79,7 +82,7 @@ check('路径 → 盘根一级目录名', top.ok === true && top.top === 'Zcode'
 const denyDecision = checkAccess({
   state: { defaultLevel: 'deny', harnesses: {} },
   rosterNames: ['Zcode'],
-  path: 'D:\\Zcode\\x',
+  path: `${HARNESS_DIR}/x`,
   op: 'read',
 });
 check('名单内 + 默认禁 ⇒ 拒', denyDecision.allowed === false && denyDecision.level === 'deny');
@@ -89,7 +92,7 @@ check('拒绝 / 放行都带命中对象信息', denyDecision.matchedKind === 'n
 const outOfScope = checkAccess({
   state: { defaultLevel: 'deny', harnesses: {} },
   rosterNames: ['Zcode'],
-  path: 'D:\\工作区\\插件制作\\x',
+  path: `${OUTSIDE_DIR}/x`,
   op: 'delete',
 });
 check('不在名单内 ⇒ 不属受管对象（放行但如实说明）', outOfScope.allowed === true && outOfScope.inRoster === false);
@@ -133,7 +136,7 @@ check('路径对象命中 + read 级 ⇒ 放行 read', pathDecision.allowed === 
 const nameOnlyDecision = checkAccess({
   state: { defaultLevel: 'deny', harnesses: { Zcode: { level: 'read' } } },
   rosterObjects: [{ kind: 'name', key: 'Zcode', raw: 'Zcode' }],
-  path: 'D:\\Zcode\\x',
+  path: `${HARNESS_DIR}/x`,
   op: 'read',
 });
 check('路径没命中时**退回**名字对象（旧行为不破）', nameOnlyDecision.allowed === true && nameOnlyDecision.matchedKind === 'name');
@@ -161,12 +164,12 @@ check(
   negStatus.stdout.split('\n').filter((line) => /Zcode|opencode/.test(line)).join(' | '),
 );
 
-const realTraverse = runCli([...negArgs, 'traverse', '--path', 'D:\\Zcode'], '默认禁 · traverse D:\\Zcode');
+const realTraverse = runCli([...negArgs, 'traverse', '--path', HARNESS_DIR], '默认禁 · traverse D:\\Zcode');
 check('默认禁时 traverse D:\\Zcode 被拒（退出码 3）', realTraverse.exitCode === 3, `exit=${realTraverse.exitCode}`);
 check('被拒时 stderr 有可抄的原始报错', /拒绝：/.test(realTraverse.stderr), realTraverse.stderr.trim());
 check('被拒时 stdout 为空（没有泄漏任何目录项）', realTraverse.stdout.trim() === '', JSON.stringify(realTraverse.stdout));
 
-const realCheck = runCli([...negArgs, 'check', '--path', 'D:\\Zcode\\任意文件.md', '--op', 'read'], '默认禁 · check read');
+const realCheck = runCli([...negArgs, 'check', '--path', `${HARNESS_DIR}/any.md`, '--op', 'read'], '默认禁 · check read');
 check('默认禁时 check(read) 也被拒', realCheck.exitCode === 3, `exit=${realCheck.exitCode}`);
 
 const realCheckDelete = runCli([...negArgs, 'check', '--name', 'opencode', '--op', 'delete'], '默认禁 · check delete');
