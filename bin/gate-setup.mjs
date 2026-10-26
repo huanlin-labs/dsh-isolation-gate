@@ -304,7 +304,21 @@ function main() {
   };
 
   if (harness === 'doctor') {
-    const rows = ['claude', 'zcode', 'pi', 'gemini', 'opencode', 'codex', 'mcp'].map((h) => verifySetup(h, { home: readFlag('--home') }));
+    const list = ['claude', 'zcode', 'pi', 'gemini', 'opencode', 'codex', 'mcp'];
+    const home = readFlag('--home');
+    const fix = argv.includes('--fix');
+    let rows = list.map((h) => verifySetup(h, { home }));
+    if (fix) {
+      for (const r of rows.filter((row) => !row.ok)) {
+        try {
+          const done = runSetup(r.harness, { home, write: true });
+          console.log(`  + 已接上 ${r.harness} → ${done.file}`);
+        } catch (error) {
+          console.log(`  ! ${r.harness} 接线失败：${error.message}`);
+        }
+      }
+      rows = list.map((h) => verifySetup(h, { home }));
+    }
     console.log('门禁接线体检');
     for (const r of rows) console.log(`${r.ok ? '✔' : '–'} ${r.harness.padEnd(9)} ${r.detail}`);
     const okCount = rows.filter((r) => r.ok).length;

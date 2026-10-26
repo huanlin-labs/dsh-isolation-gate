@@ -28,6 +28,7 @@ const suites = [
   ['一键接线器（dry-run / 合并 / 幂等 / 多 harness）', join(import.meta.dirname, 'run-setup.mjs')],
   ['pi 扩展（tool_call 拦截 / 放行 / 字段容错）', join(import.meta.dirname, 'run-plugin-pi.mjs')],
   ['本机设置页（gate ui：只读接口 / token / 改级别 / 加减对象）', join(import.meta.dirname, 'run-ui.mjs')],
+  ['接线体检（doctor / --fix 全量接线）', join(import.meta.dirname, 'run-doctor.mjs')],
 ];
 
 const results = [];

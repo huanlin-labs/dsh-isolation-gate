@@ -19,6 +19,8 @@ npx dsh-isolation-gate setup mcp       # Cursor / Windsurf（MCP，advisory）
 
 ```bash
 npx dsh-isolation-gate doctor
+# 想一把全接上：
+npx dsh-isolation-gate doctor --fix
 ```
 
 ## 2. 定规矩
