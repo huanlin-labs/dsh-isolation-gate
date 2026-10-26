@@ -29,6 +29,7 @@ jobs:
       - name: doctor + ui suites
         run: |
           node test/run-data-layer.mjs
+          node test/run-guard.mjs
           node test/run-doctor.mjs
           node test/run-ui.mjs
 

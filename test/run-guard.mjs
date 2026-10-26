@@ -17,6 +17,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { homedir, tmpdir } from 'node:os';
 
 import {
   OPS,
@@ -71,7 +72,8 @@ check('full 四项全许', allowedOps('full').join(',') === 'traverse,read,write
 check('未知级别按 deny 处理', levelAllows('whatever', 'read') === false);
 check('未知操作一律不许', levelAllows('full', 'sudo') === false);
 
-const top = topSegmentOf('D:\\Zcode\\小说\\a.md');
+const samplePath = process.platform === 'win32' ? 'D:\\Zcode\\小说\\a.md' : '/Zcode/小说/a.md';
+const top = topSegmentOf(samplePath);
 check('路径 → 盘根一级目录名', top.ok === true && top.top === 'Zcode', top.top ?? top.error);
 
 const denyDecision = checkAccess({
@@ -141,9 +143,10 @@ console.log('\n########## ② 默认禁 · 对 D:\\Zcode 的负向实测（夹�
 
 // ⚠️ 这一段刻意**不读生产配置**：夹具全禁状态 + 夹具名单 ⇒ 跑在任何机器、任何开关状态下结论一致，
 //    也避免自测去写 `D:\.agents\`（那两个文件是生产资产）。生产文件只做**只读**不变式断言。
-const realStatePath = 'D:\\.agents\\门禁-授权.json';
-const realRosterPath = 'D:\\.agents\\门禁-名单.txt';
-const negDir = mkdtempSync(join('D:\\临时', 'hs-gate-neg-'));
+const agentsBase = process.platform === 'win32' && existsSync('D:\\.agents') ? 'D:\\.agents' : join(homedir(), '.agents');
+const realStatePath = join(agentsBase, '门禁-授权.json');
+const realRosterPath = join(agentsBase, '门禁-名单.txt');
+const negDir = mkdtempSync(join(tmpdir(), 'hs-gate-neg-'));
 const negState = join(negDir, 'state.json');
 const negRoster = join(negDir, 'roster.txt');
 writeFileSync(negState, JSON.stringify({ version: 1, defaultLevel: 'deny', harnesses: {} }), 'utf8');
@@ -191,8 +194,8 @@ console.log('\n########## ③ 夹具放行（D:\\临时 下的夹具 / 临时名
 // ⚠️ 夹具必须放在某个**盘根一级目录**之下，因为名字类判定取的正是"盘根一级目录名"（`D:\<名>\`）。
 //    临时目录 `D:\临时\` 本身就是合法的盘根一级目录名，因此夹具用 `临时` 当名单项 ——
 //    整段只跑在**临时名单 / 临时状态**上（--roster / --state 全部指向夹具），不碰真实配置。
-const fx = mkdtempSync(join('D:\\临时', 'hs-gate-'));
-const fxName = '临时';
+const fx = mkdtempSync(join(tmpdir(), 'hs-gate-'));
+const fxName = topSegmentOf(fx).top;
 const fxRoot = join(fx, 'fakeRoot');
 const fxState = join(fx, 'state.json');
 const fxRoster = join(fx, 'roster.txt');
