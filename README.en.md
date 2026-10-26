@@ -9,6 +9,46 @@
 
 ---
 
+
+![30-second walkthrough: wiring 0/7 → 7/7, levels, a real denial, and the audit log](docs/brand/demo.gif)
+
+## Quick start (3 commands)
+
+```bash
+npx dsh-isolation-gate doctor --fix   # wire the harnesses it can find
+npx dsh-isolation-gate doctor         # expect 7/7
+npx dsh-isolation-gate ui             # flip levels on one screen
+```
+
+Changing a level is a UI action (`gate ui`, or the Gate panel inside DSH). The `gate` CLI is the *governed channel* — it judges and reads/writes/deletes under the current policy; it does not grant anything.
+
+## Verified, not claimed
+
+| Check | Result |
+|---|---|
+| Local test suite | 15/15 suites pass |
+| `npm run verify:install` | packs the repo, installs into an empty temp dir, then `doctor` 0/7 → `doctor --fix` 7/7 → re-check 7/7 |
+| CI | Ubuntu / macOS / Windows × Node 20 / 22 / 24 |
+| Author machine | `doctor` 7/7; the plugin is loaded via a profile `link:` to the repo; a real tool call was denied by it |
+
+Per-harness status lives in [docs/VERIFY.md](docs/VERIFY.md); a one-page walkthrough with real captured output is in [docs/EXAMPLES.md](docs/EXAMPLES.md).
+
+## How it wires into each harness
+
+| Harness | Mechanism | Hard block? |
+|---|---|---|
+| DSH | native tool guard (`ctx.tools.guard`) | yes |
+| Claude Code / ZCode | `PreToolUse` hook | yes |
+| Gemini CLI | `BeforeTool` hook | yes |
+| opencode | in-process plugin | yes |
+| pi | extension `tool_call` | yes |
+| Codex CLI | MCP server | no — advisory |
+| Cursor / Windsurf | MCP server | no — advisory |
+
+**Honest limits:** anything that only speaks MCP can be *asked* to respect the gate but cannot be *stopped*. opencode and Gemini are wired and unit-tested but have not been run through a full logged-in session.
+
+---
+
 ## What it is (and is not)
 
 It is not another allow/deny rule engine, and it is not a sandbox.

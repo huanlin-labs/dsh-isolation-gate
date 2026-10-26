@@ -1,3 +1,7 @@
+## 1.13.2 — 2026-10-26
+
+- README.en.md 补齐中文版的首屏：演示 GIF、三条命令上手、「Verified, not claimed」验证表、按 harness 的接线方式与强度、以及诚实限制（MCP = advisory）。
+
 ## 1.13.1 — 2026-10-26
 
 - README 首屏新增 30 秒终端回放 GIF（`docs/brand/demo.gif`，25 帧 / 287 KB）：接线 0/7 → `--fix` 7/7 → `status` → 真实拦截文案。内容均为实测输出，非模拟界面。
