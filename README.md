@@ -299,7 +299,7 @@ node bin/gate.mjs log    --limit 20
 ## 自测
 
 ```bash
-node test/run-all.mjs     # 6 个套件 · 396 断言 · 全离线（不需要 GUI/dsh）
+node test/run-all.mjs     # 16 个套件 · 全离线（不需要 GUI/dsh）
 node --check lib/*.js
 ```
 

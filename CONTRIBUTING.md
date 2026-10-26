@@ -14,7 +14,7 @@
 git clone https://github.com/huanlin-labs/dsh-isolation-gate.git
 cd dsh-isolation-gate
 node --version        # 需要 >= 20.11
-npm test              # 4 个套件，325 条断言，无外部依赖
+npm test              # 16 个套件，无外部依赖
 ```
 
 单跑某个套件：

@@ -246,14 +246,14 @@ From 1.0 onward, the surfaces below **only grow, never break**. A breaking chang
 2. **Shell scanning is heuristic.** Variable indirection, command substitution, encoding, symlinks and `cmd /c` wrappers can bypass it — the same known limitation as comparable in-process guards.
 3. **Not a kernel boundary.** It changes no ACLs and does not take over the sandbox.
 4. **The tool guard only covers host tools.** An MCP tool that spawns its own process is constrained only by its argument text.
-5. **Windows-first.** Path comparison follows Windows semantics; other platforms are untested.
+5. **Windows-first.** Path comparison follows Windows semantics. CI (tests + a real `npm pack` → install → `doctor` run) covers Linux, macOS and Windows, but end-to-end sessions inside each harness were only verified on Windows.
 
 ---
 
 ## Tests
 
 ```bash
-node test/run-all.mjs     # 6 suites · 396 assertions · fully offline
+node test/run-all.mjs     # 16 suites · fully offline
 node --check lib/*.js
 ```
 
