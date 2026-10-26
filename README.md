@@ -20,6 +20,8 @@ dsh plugin --profile desktop add dsh-isolation-gate
 > ⭐ **如果它帮你少踩一次坑，点个 Star 能让更多人找到它** —— 这是这个项目唯一的「传播预算」。
 > [![Star](https://img.shields.io/github/stars/huanlin-labs/dsh-isolation-gate?style=social)](https://github.com/huanlin-labs/dsh-isolation-gate)
 
+![30 秒走通：接线 0/7 → 7/7，授权、拦截、审计](docs/brand/demo.gif)
+
 ![门禁总览](docs/screenshots/01-overview.png)
 
 ---
