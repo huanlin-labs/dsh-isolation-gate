@@ -1,3 +1,5 @@
+![Isolation Gate](docs/brand/banner.png)
+
 <p align="center"><img src="docs/banner.svg" alt="门禁 · dsh-isolation-gate" width="100%"></p>
 
 # 门禁 · dsh-isolation-gate

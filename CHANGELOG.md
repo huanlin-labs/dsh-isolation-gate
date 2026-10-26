@@ -1,3 +1,7 @@
+## 1.12.5 — 2026-10-26
+
+- README 加品牌横幅（docs/brand/banner.png + PHILOSOPHY.md）。
+
 ## 1.12.4 — 2026-10-26
 
 - 修复 `normalizeRoot` 在 macOS/Linux 上错误追加反斜杠，导致 `listRootDirs` 在非 Windows 上失败。
