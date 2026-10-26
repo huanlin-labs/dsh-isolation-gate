@@ -319,6 +319,11 @@ function main() {
       }
       rows = list.map((h) => verifySetup(h, { home }));
     }
+    if (argv.includes('--json')) {
+      console.log(JSON.stringify({ ok: rows.filter((r) => r.ok).length, total: rows.length, rows }, null, 2));
+      process.exitCode = rows.some((r) => r.ok) ? 0 : 1;
+      return;
+    }
     console.log('门禁接线体检');
     for (const r of rows) console.log(`${r.ok ? '✔' : '–'} ${r.harness.padEnd(9)} ${r.detail}`);
     const okCount = rows.filter((r) => r.ok).length;
