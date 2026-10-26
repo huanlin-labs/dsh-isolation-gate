@@ -421,7 +421,13 @@ function usage() {
 }
 
 function main() {
-  const { positional, options } = parseArgs(process.argv.slice(2));
+  const argv0 = process.argv.slice(2);
+if (argv0.includes('--version') || argv0.includes('-v')) {
+  console.log(`dsh-isolation-gate ${JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version}`);
+  process.exit(0);
+}
+
+const { positional, options } = parseArgs(argv0);
   const command = positional[0];
   if (!command || command === 'help' || options.help === true) return usage();
   const cfg = configFrom(options);

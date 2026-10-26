@@ -1,3 +1,8 @@
+## 1.13.3 — 2026-10-26
+
+- `gate` / `gate-setup` 支持 `--version` / `-v`（输出 `dsh-isolation-gate <版本>、exit 0）——报问题时先要版本号。
+- 新增 `test/run-cli.mjs`（4 条契约断言，核对 package.json 版本），套件数 15→16。
+
 ## 1.13.2 — 2026-10-26
 
 - README.en.md 补齐中文版的首屏：演示 GIF、三条命令上手、「Verified, not claimed」验证表、按 harness 的接线方式与强度、以及诚实限制（MCP = advisory）。

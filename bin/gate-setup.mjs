@@ -18,6 +18,12 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { dirname, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 
+const argv0 = process.argv.slice(2);
+if (argv0.includes('--version') || argv0.includes('-v')) {
+  console.log(`dsh-isolation-gate ${JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version}`);
+  process.exit(0);
+}
+
 const SELF = resolve(import.meta.dirname, '..');
 const NODE = process.execPath;
 

@@ -39,6 +39,7 @@ npx dsh-isolation-gate doctor
 | `full` | `traverse` `read` `write` `delete` | 明确要 AI 代管某个目录 |
 
 ```bash
+npx dsh-isolation-gate --version                     # 报问题先给这个
 npx dsh-isolation-gate status      # 看谁被管、当前什么级别
 npx dsh-isolation-gate policy      # 一行紧凑策略（可塞进提示词）
 npx dsh-isolation-gate ui          # 打开本机设置页，点开关改级别
