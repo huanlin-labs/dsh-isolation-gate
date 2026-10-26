@@ -118,7 +118,7 @@ dsh plugin --profile desktop add dsh-isolation-gate
 | harness | 拦截点 | 能硬拦？ | 验证状态 |
 | --- | --- | --- | --- |
 | **DSH** | `ctx.tools.guard`（进程内，能看到工具参数） | ✅ | **真机验证**（还有面板 / 7 个工具 / 分组 / 审计，唯一完整形态） |
-| **pi** | extension 事件 `tool_call`（文档原文「authorize or modify a tool call」） | ✅ | ⚠️ 仅文档核对，未真机（本机未装 pi），见 `docs/PI.md` |
+| **pi** | extension 事件 `tool_call`（`bin/gate-plugin-pi.mjs`，`gate-setup pi` 一条命令接线） | ✅ | 适配器 + 6 条单测已交付；**未真机**（本机未装 pi），见 `docs/PI.md` |
 | **Claude Code** | `PreToolUse` hook 返回 deny | ✅ | 单测通过，未真机 |
 | **ZCode** | `PreToolUse` → `permissionDecision: deny`（与 Claude Code 同协议，复用同一适配器） | ✅ | 文档逐项对齐，未真机；见 `docs/ZCODE.md` |
 | **opencode** | `tool.execute.before` 抛错阻断 | ✅ | 单测通过，未真机 |

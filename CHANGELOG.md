@@ -1,3 +1,11 @@
+## 1.9.0 — 2026-10-26
+
+- **pi 适配器**：`bin/gate-plugin-pi.mjs` —— 挂 pi 的 `tool_call` 事件，进程内硬拦；策略引擎、状态文件、审计与 DSH 共用（一处配置，两个 harness 生效）。
+- **`gate-setup pi`**：一条命令在 `~/.pi/extensions/` 生成转发扩展；dry-run 默认、`--write` 自动备份。
+- 工具名映射 read/write、事件字段容错（toolName/tool_name、input/args/toolInput）、命令内绝对路径提取；策略异常 **fail-closed**。
+- 新增 `test/run-plugin-pi.mjs`（8 断言）→ **13 套件全绿**。
+- 文档 `docs/PI.md` 改写为真实接入说明（含"未真机验证"声明）。
+
 ## 1.8.0 — 2026-10-26
 
 - **一键接线器**：`bin/gate-setup.mjs`（bin 名 `gate-setup`）——`gate-setup <claude|zcode|gemini|opencode|mcp>`，默认 dry-run，`--write` 才落盘并自动备份；幂等（重复执行不重复追加）。

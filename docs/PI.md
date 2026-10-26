@@ -1,40 +1,42 @@
 # 在 pi 里用门禁
 
-> ⚠️ **验证状态**：本机没有安装 pi，**未做真机验证**。下面是按 pi 官方文档核对出的接入点，接线后请先做一次受管目录读取测试。
+pi 的扩展系统在**进程内**触发 `tool_call` 事件（官方文档：「Authorize or modify a tool call」），
+所以门禁在 pi 里是**硬拦**，和 DSH 同级别，不是"建议 + 审计"。
 
-## 它拦在哪
+> **验证状态**：适配器 + 8 条单测通过（假 pi 驱动：拦截 / 放行 / snake_case / 命令里的绝对路径 / 只读禁写 / 名单外不拦）。
+> **未做真机验证**：写这份文档的机器上没装 pi。接好后请先做一次受管目录读取测试。
 
-pi 的 extension 系统有 `tool_call` 事件，文档对它的描述是 **"Authorize or modify a tool call"** —— 工具执行前触发，handler 可以拒绝这次调用。这就是完整的前置拦截点，和 DSH 的 `ctx.tools.guard` 同级。
+## 一条命令接线
 
-事件表（摘自 `packages/coding-agent/docs/extensions.md`）：
-
-| 阶段 | 事件 |
-| --- | --- |
-| 工具执行 | `tool_execution_start` → **`tool_call`** → `tool_execution_update` → `tool_result` → `tool_execution_end` |
-
-## 接线方式（示意）
-
-```ts
-// ~/.pi/extensions/gate.ts（路径以你安装的 pi 版本为准）
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-
-export default function gate(pi: ExtensionAPI) {
-  pi.on("tool_call", async (event, ctx) => {
-    // 1) 取出本次调用涉及的路径（event.toolName / event.input）
-    // 2) 调门禁 CLI 判定：node D:/插件/dsh-isolation-gate/bin/gate.mjs check <路径> <op>
-    // 3) 拒绝时返回「阻止」结果（字段名以你这版 types.ts 的 ToolCallEventResult 为准）
-    return { block: true, reason: "blocked by 门禁" };
-  });
-}
+```bash
+node D:/插件/dsh-isolation-gate/bin/gate-setup.mjs pi          # dry-run，看要写什么
+node D:/插件/dsh-isolation-gate/bin/gate-setup.mjs pi --write  # 落盘（有原文件会先备份）
 ```
 
-> `{ block: true, reason }` 这个形状来自社区实现（oh-my-pi 的 hook 文档）；**上游 `ToolCallEventResult` 的确切字段请以你安装版本的 `types.ts` 为准**，别照抄。
+生成 `~/.pi/extensions/isolation-gate.js`：
 
-## 为什么 pi 值得做
+```js
+// 门禁 · pi 扩展（由 gate-setup 生成；删除本文件即停用）
+export { default } from "file:///<安装路径>/dsh-isolation-gate/bin/gate-plugin-pi.mjs";
+```
 
-和 DSH 一样，pi 的扩展跑在**进程内**、能拿到工具名与参数，所以「默认禁 + 人批放宽」这套不对称权限能原样成立，不需要退化成 advisory。
+> 如果这版 pi 只扫描 `.ts` 扩展，把文件名改成 `isolation-gate.ts`，内容不变。
 
-## 还没做的部分
+## 判定流程
 
-- 适配器代码（`bin/gate-plugin-pi.mjs`）没写：没有真机就没法验证返回形状，写了也只是猜。
-- 你装好 pi 后告诉我版本，我照着 `types.ts` 写适配器 + 单测 + 一次真机读取测试。
+1. `tool_call` 触发 → 取 `event.toolName` / `event.input`（兼容 `tool_name` / `tool_input` / `args`）；
+2. 工具名映射 `read` / `write`（未知工具按 `write`，偏保守）；
+3. 收集参数里的路径：`file_path` / `path` / `directory` / `cwd`，以及 shell 命令中的绝对路径；
+4. 逐个过策略引擎：**名单内对象**按级别判，**名单外不拦**（与 DSH 工具门同语义）；
+5. 命中拒绝 → 返回 `{ block: true, reason }`；判定异常 → **fail-closed**。
+
+## 同一个门禁
+
+和 DSH 共用 `lib/service.js` 的策略引擎、同一份状态文件（`D:\.agents\门禁-授权.json`）与审计。
+在 DSH 面板把 `D:\Zcode` 设为「禁」，pi 读同一目录同样被拦——**一处配置，两个 harness 生效**。
+
+## 边界
+
+- 只挂 `tool_call`；`input` / `before_agent_start` 等事件不参与判定。
+- 名单外放行是刻意设计：门禁只管"你圈出来的隔离区"，不假装接管整个文件系统。
+- 需要 Node 可执行（pi 本身依赖 Node，通常满足）。

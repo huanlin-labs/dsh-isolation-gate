@@ -22,12 +22,13 @@ const SELF = resolve(import.meta.dirname, '..');
 const NODE = process.execPath;
 
 function usage() {
-  return `用法：gate-setup <claude|zcode|gemini|opencode|mcp> [--write] [--home <dir>] [--project <dir>] [--backup <dir>]
+  return `用法：gate-setup <claude|zcode|pi|gemini|opencode|mcp> [--write] [--home <dir>] [--project <dir>] [--backup <dir>]
 
   claude    写 ~/.claude/settings.json 的 hooks.PreToolUse
   gemini    写 ~/.gemini/settings.json 的 hooks.BeforeTool
   opencode  写 ~/.config/opencode/opencode.json 的 plugin 数组
   zcode     写 ~/.zcode/cli/config.json 的 hooks.events.PreToolUse（与 Claude Code 同协议）
+  pi        写 ~/.pi/extensions/isolation-gate.js（转发到 gate-plugin-pi.mjs，进程内硬拦）
   mcp       写 ~/.cursor/mcp.json 的 mcpServers（Cursor / Windsurf 通用形状）
 
 默认 dry-run：只打印计划，不落盘。加 --write 才写。`;
@@ -83,6 +84,23 @@ export function planFor(harness, options = {}) {
         draft.hooks.events.PreToolUse = list;
         return draft;
       },
+    };
+  }
+
+  if (harness === 'pi') {
+    const file = join(home, '.pi', 'extensions', 'isolation-gate.js');
+    const targetUrl = `file:///${join(SELF, 'bin', 'gate-plugin-pi.mjs').split('\\').join('/')}`;
+    const content = [
+      '// 门禁 · pi 扩展（由 gate-setup 生成；删除本文件即停用）',
+      '// 真正的实现在 dsh-isolation-gate 包内，这里只做转发。',
+      `export { default } from "${targetUrl}";`,
+      '',
+    ].join('\n');
+    return {
+      harness,
+      file,
+      describe: 'pi 扩展（tool_call 进程内硬拦）',
+      raw: content,
     };
   }
 
@@ -171,6 +189,25 @@ function writeJsonAtomic(file, data) {
 
 export function runSetup(harness, options = {}) {
   const plan = planFor(harness, options);
+  if (plan.raw !== undefined) {
+    const exists = existsSync(plan.file);
+    const result = {
+      harness: plan.harness,
+      describe: plan.describe,
+      file: plan.file,
+      existed: exists,
+      written: false,
+      backup: null,
+      preview: { content: plan.raw },
+    };
+    if (!options.write) return result;
+    result.backup = backupFile(plan.file, options.backup ?? join(options.home ?? homedir(), 'gate-setup-backup'));
+    mkdirSync(dirname(plan.file), { recursive: true });
+    writeFileSync(plan.file, plan.raw, 'utf8');
+    result.written = true;
+    return result;
+  }
+
   const { exists, data } = readJsonIfExists(plan.file);
   const merged = plan.merge(data);
   const result = {
