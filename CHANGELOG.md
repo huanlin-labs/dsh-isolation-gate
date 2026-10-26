@@ -1,3 +1,7 @@
+## 1.10.1 — 2026-10-26
+
+加兼容性标签（npm keywords / GitHub topics）与 `gate-ui` 命令别名：明确对 Claude Code / ZCode / opencode / pi / Codex / Cursor / MCP 通用。
+
 ## 1.10.0 — 2026-10-26
 
 **给没有前端的 harness 补一个设置页**：ZCode / opencode / pi / Claude Code 的用户原本只能改 JSON，没法"设分组、禁谁"。
