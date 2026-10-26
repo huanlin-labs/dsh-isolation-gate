@@ -16,21 +16,18 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: syntax check every module
+        shell: bash
         run: |
-          node --check lib/index.js
-          node --check lib/store.js
-          node --check lib/roster.js
-          node --check lib/dirs.js
-          node --check lib/audit.js
-          node --check bin/gate.mjs
-          node --check bin/gate-setup.mjs
-          node --check bin/gate-ui.mjs
-          node --check bin/gate-mcp.mjs
+          for f in lib/*.js bin/*.mjs scripts/*.mjs test/*.mjs; do
+            echo "check $f"
+            node --check "$f"
+          done
       - name: doctor + ui suites
         run: |
           node test/run-data-layer.mjs
           node test/run-doctor.mjs
           node test/run-ui.mjs
+          node test/run-cli.mjs
       - name: install + doctor end-to-end
         run: node scripts/verify-install.mjs
 
