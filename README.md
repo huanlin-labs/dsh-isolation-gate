@@ -363,6 +363,11 @@ MIT · 见 [LICENSE](./LICENSE)。
 **点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
+## 已验证（不是自吹）
+
+- `npm run verify:install`：把仓库打成 tarball，在**空临时目录**里 `npm install`，再跑 `doctor`（应 0/7）→ `doctor --fix`（应 7/7）→ 复查仍 7/7。
+- CI 在 Ubuntu / macOS / Windows 三平台跑同一脚本；另在 tag 上用 `verify:publish` 直查 registry。
+
 ## 三分钟上手（中文）
 
 见 [docs/QUICKSTART.zh.md](docs/QUICKSTART.zh.md)，或直接：`npx dsh-isolation-gate doctor` 看接线状态。

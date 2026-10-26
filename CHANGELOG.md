@@ -1,3 +1,8 @@
+## 1.12.7 — 2026-10-26
+
+- 新增 `npm run verify:install`：用 `npm pack` 的 tarball 在临时目录真装一遍，跑 `doctor`（0/7）与 `doctor --fix`（7/7）并复查可重复。
+- CI 增加该步骤 —— 三平台都验证「装得上、跑得动」。
+
 ## 1.12.6 — 2026-10-26
 
 - `topSegmentOf` 在非 Windows 上按 POSIX 根解析（不再用 `win32.parse`），名判定的“根下第一段”语义在 macOS/Linux 上成立。
