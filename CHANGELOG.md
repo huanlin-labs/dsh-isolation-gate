@@ -1,3 +1,7 @@
+## 1.12.8 — 2026-10-26
+
+- 新增 docs/EXAMPLES.md：用真实输出讲完「装、接线、三档权限、拦截文案、排错」；修正文中不存在的 `set` 命令（改级别走 `ui`）。
+
 ## 1.12.7 — 2026-10-26
 
 - 新增 `npm run verify:install`：用 `npm pack` 的 tarball 在临时目录真装一遍，跑 `doctor`（0/7）与 `doctor --fix`（7/7）并复查可重复。

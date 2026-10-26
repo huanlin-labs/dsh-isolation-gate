@@ -363,6 +363,10 @@ MIT · 见 [LICENSE](./LICENSE)。
 **点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
+## 五分钟走通（真实输出）
+
+不想读长文：[一页就够](docs/EXAMPLES.md) —— 装、接线、三档权限、拦截文案、排错三连，全是实测输出。
+
 ## 已验证（不是自吹）
 
 - `npm run verify:install`：把仓库打成 tarball，在**空临时目录**里 `npm install`，再跑 `doctor`（应 0/7）→ `doctor --fix`（应 7/7）→ 复查仍 7/7。
