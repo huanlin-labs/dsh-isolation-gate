@@ -1,3 +1,8 @@
+## 1.13.4 — 2026-10-26
+
+- **修复 macOS 上 `gate-setup` 完全静默不出输出**：入口判定用 `resolve()` 比路径，而 macOS 的 `/var` 是 `/private/var` 的符号链接，两边永远不相等 ⇒ `main()` 从不执行。改为比 `realpathSync`。
+- 这也是 CI 在 macOS 上 `verify:install` 全红的根因（doctor 输出为空）。
+
 ## 1.13.3 — 2026-10-26
 
 - `gate` / `gate-setup` 支持 `--version` / `-v`（输出 `dsh-isolation-gate <版本>、exit 0）——报问题时先要版本号。

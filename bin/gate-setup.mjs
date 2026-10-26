@@ -14,7 +14,7 @@
  *   - 已经配过就不重复追加（幂等）
  */
 
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 
@@ -378,6 +378,22 @@ function main() {
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) {
+// 入口判定必须比「真实路径」：macOS 的 /var 是 /private/var 的符号链接，
+// 直接比 resolve() 会让脚本被当成「被 import 的模块」而静默什么都不做。
+const invokedPath = (() => {
+  try {
+    return process.argv[1] ? realpathSync(process.argv[1]) : '';
+  } catch {
+    return '';
+  }
+})();
+const selfPath = (() => {
+  try {
+    return realpathSync(import.meta.filename);
+  } catch {
+    return '';
+  }
+})();
+if (invokedPath !== '' && invokedPath === selfPath) {
   main();
 }
