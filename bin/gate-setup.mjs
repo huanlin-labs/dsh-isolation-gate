@@ -29,6 +29,7 @@ function usage() {
   opencode  写 ~/.config/opencode/opencode.json 的 plugin 数组
   zcode     写 ~/.zcode/cli/config.json 的 hooks.events.PreToolUse（与 Claude Code 同协议）
   pi        写 ~/.pi/extensions/isolation-gate.js（转发到 gate-plugin-pi.mjs，进程内硬拦）
+  doctor    体检：一次看所有 harness 的接线状态
   mcp       写 ~/.cursor/mcp.json 的 mcpServers（Cursor / Windsurf 通用形状）
   codex     写 ~/.codex/config.toml 的 mcp_servers（advisory，不能硬拦）
 
@@ -301,6 +302,16 @@ function main() {
     const index = argv.indexOf(name);
     return index >= 0 ? argv[index + 1] : undefined;
   };
+
+  if (harness === 'doctor') {
+    const rows = ['claude', 'zcode', 'pi', 'gemini', 'opencode', 'codex', 'mcp'].map((h) => verifySetup(h, { home: readFlag('--home') }));
+    console.log('门禁接线体检');
+    for (const r of rows) console.log(`${r.ok ? '✔' : '–'} ${r.harness.padEnd(9)} ${r.detail}`);
+    const okCount = rows.filter((r) => r.ok).length;
+    console.log(`\n已接线 ${okCount}/${rows.length}；未接线的用 gate-setup <harness> --write 接上。`);
+    process.exitCode = okCount > 0 ? 0 : 1;
+    return;
+  }
 
   if (!harness || harness === 'help' || harness === '--help') {
     console.log(usage());

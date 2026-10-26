@@ -1,3 +1,8 @@
+## 1.12.0 — 2026-10-26
+
+- 新增 `gate-setup doctor`：一次体检所有 harness 的接线状态（✔ 已接线 / – 未接线）。
+- 新增中文《3 分钟上手》：docs/QUICKSTART.zh.md，README 加索引。
+
 ## 1.11.1 — 2026-10-26
 
 真机补齐：opencode 1.18.29 插件已装并验到 deny 拦截；Gemini CLI 0.65.0 安装 + BeforeTool 钩子已写；新增 docs/VERIFY.md 与 README 支持矩阵。

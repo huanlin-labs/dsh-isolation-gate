@@ -361,6 +361,10 @@ MIT · 见 [LICENSE](./LICENSE)。
 **点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
+## 三分钟上手（中文）
+
+见 [docs/QUICKSTART.zh.md](docs/QUICKSTART.zh.md)，或直接：`npx dsh-isolation-gate doctor` 看接线状态。
+
 ## 没有前端的 harness 怎么设（ZCode / opencode / pi / Claude Code）
 
 dsh 用户有「门禁」面板；**其它 harness 没有**。所以带了一个本机设置页：
