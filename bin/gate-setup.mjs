@@ -88,12 +88,15 @@ export function planFor(harness, options = {}) {
   }
 
   if (harness === 'pi') {
-    const file = join(home, '.pi', 'extensions', 'isolation-gate.js');
-    const targetUrl = `file:///${join(SELF, 'bin', 'gate-plugin-pi.mjs').split('\\').join('/')}`;
+    const file = join(home, '.pi', 'agent', 'extensions', 'isolation-gate.js');
+    const adapter = join(SELF, 'bin', 'gate-plugin-pi.mjs').split('\\').join('/');
     const content = [
       '// 门禁 · pi 扩展（由 gate-setup 生成；删除本文件即停用）',
       '// 真正的实现在 dsh-isolation-gate 包内，这里只做转发。',
-      `export { default } from "${targetUrl}";`,
+      '// 注意：必须用动态 import + pathToFileURL —— pi 的加载器会吃掉静态 file:// 前缀（Windows 上会报 protocol d:）。',
+      'import { pathToFileURL } from "node:url";',
+      `const mod = await import(pathToFileURL("${adapter}").href);`,
+      'export default mod.default;',
       '',
     ].join('\n');
     return {

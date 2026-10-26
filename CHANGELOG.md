@@ -1,3 +1,11 @@
+## 1.9.1 — 2026-10-26
+
+真机装 pi 1.4.0 后修的两个 bug（纸上看不出、装上才炸）：
+
+- **扩展目录写错**：`~/.pi/extensions/` → **`~/.pi/agent/extensions/`**（pi 只认后者，写错等于没装）。
+- **Windows 静态 re-export 失败**：`export { default } from "file:///D:/…"` 被 pi 加载器吃成 `d:` 协议，报 `ERR_UNSUPPORTED_ESM_URL_SCHEME`；改为 `pathToFileURL(...).href` 动态 import。
+
+并用安装版 `types.d.ts` 核对：`ToolCallEventResult = { block?: boolean; reason?: string; terminate?: boolean }`，与适配器返回形状一致。
 ## 1.9.0 — 2026-10-26
 
 - **pi 适配器**：`bin/gate-plugin-pi.mjs` —— 挂 pi 的 `tool_call` 事件，进程内硬拦；策略引擎、状态文件、审计与 DSH 共用（一处配置，两个 harness 生效）。

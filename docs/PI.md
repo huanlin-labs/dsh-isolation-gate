@@ -40,3 +40,10 @@ export { default } from "file:///<安装路径>/dsh-isolation-gate/bin/gate-plug
 - 只挂 `tool_call`；`input` / `before_agent_start` 等事件不参与判定。
 - 名单外放行是刻意设计：门禁只管"你圈出来的隔离区"，不假装接管整个文件系统。
 - 需要 Node 可执行（pi 本身依赖 Node，通常满足）。
+
+## 真机验证（2026-10-26，pi 1.4.0）
+
+- ✅ 扩展放在 **`~/.pi/agent/extensions/isolation-gate.js`** 时被 pi 真实加载（启动零扩展错误）。
+- ✅ 返回形状 `{ block: true, reason }` 与安装版 `dist/core/extensions/types.d.ts` 的 `ToolCallEventResult` 一致（`block?: boolean; reason?: string; terminate?: boolean`）。
+- ⚠️ 真机暴露并已修的 2 个 bug：**目录写错**（`~/.pi/extensions` → `~/.pi/agent/extensions`）；**静态 re-export 失败**（`export … from "file:///D:/…"` 被 pi 加载器吃成 `d:` 协议 → 改 `pathToFileURL` 动态 import）。
+- ⚠️ 未跑完整模型循环：本机无模型凭据（pi 在选模型阶段即退出），"AI 发起读取 → 被拦"仍需登录后跑一次。
