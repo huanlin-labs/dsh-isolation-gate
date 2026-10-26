@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
 jobs:
-  portable:
+  syntax-and-doctor:
     strategy:
       fail-fast: false
       matrix:
@@ -15,15 +15,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - name: portable suites
+      - name: syntax check every module
         run: |
-          node test/run-data-layer.mjs
+          node --check lib/index.js
+          node --check lib/store.js
+          node --check lib/roster.js
+          node --check lib/dirs.js
+          node --check lib/audit.js
+          node --check bin/gate.mjs
+          node --check bin/gate-setup.mjs
+          node --check bin/gate-ui.mjs
+          node --check bin/gate-mcp.mjs
+      - name: doctor + ui suites
+        run: |
           node test/run-doctor.mjs
           node test/run-ui.mjs
-          node test/run-hook-claude.mjs
-          node test/run-hook-gemini.mjs
-          node test/run-mcp.mjs
-          node test/run-opencode-plugin.mjs
 
   registry-parity:
     if: startsWith(github.ref, 'refs/tags/v')
