@@ -1,3 +1,6 @@
+## 1.9.2 — 2026-10-26
+
+ZCode 真机核对（3.16.3）：配置路径 `~/.zcode/cli/config.json` 确认，`hooks.enabled: true` 必需；PreToolUse 返回协议 `hookSpecificOutput.permissionDecision` 与适配器逐字一致；项目级 hooks 当前版本被忽略，配置在 session 启动时快照。补 docs/ZCODE.md 真机结论。另：opencode 适配器测试改为夹具隔离（不再依赖本机真实门禁状态）。
 ## 1.9.1 — 2026-10-26
 
 真机装 pi 1.4.0 后修的两个 bug（纸上看不出、装上才炸）：

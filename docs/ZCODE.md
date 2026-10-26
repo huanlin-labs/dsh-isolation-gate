@@ -45,3 +45,13 @@ node D:/插件/dsh-isolation-gate/bin/gate-setup.mjs zcode --write  # 落盘（�
 - 只接了 `PreToolUse`（拦工具）。ZCode 还有 `PermissionRequest` / `Stop` / `UserPromptSubmit`，门禁暂不用。
 - deny 优先级最高（多 hook 聚合时 deny > ask > allow），符合门禁"默认禁"的语义。
 - 与 MCP 那条的区别：这是**硬拦**，不是建议。
+
+## 真机验证（2026-10-26，ZCode 3.16.3）
+
+- 安装位置实测：`E:\Zcode\ZCode.exe`（版本 3.16.3.8992）。
+- **用户级配置真实路径 = `~/.zcode/cli/config.json`**，且必须写 `hooks.enabled: true`；项目级 `hooks` 当前版本**整体忽略**（官方文档明说）。
+- 事件确认存在：`SessionStart` / `UserPromptSubmit` / **`PreToolUse`** / `PermissionRequest` / `PostToolUse` / `PostToolUseFailure` / `Stop`。
+- 返回协议确认：`hookSpecificOutput.permissionDecision = "deny"` + `permissionDecisionReason`；或进程退出码 2。适配器输出已逐字对上。
+- 配置快照在 **session 启动时**生成：改完配置要**新建会话**才生效。
+- 已实测：用真实 PreToolUse 载荷（含 camelCase + snake_case 双份字段）喂适配器，受管「禁」路径返回 deny JSON、名单外路径无输出、退出码 0。
+- 未跑完整会话循环：需要在 ZCode 里登录模型后新建会话验证（见 README 的验收步骤）。

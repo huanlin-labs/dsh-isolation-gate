@@ -71,6 +71,12 @@ try {
 
   console.log('\n【6】插件 hook 会 throw（opencode 据此阻断）');
   {
+    // 插件工厂默认读进程环境；固定到夹具，避免依赖本机真实门禁状态（真机测试是另一回事）
+    const savedEnv = { ...process.env };
+    process.env.GATE_STATE_PATH = statePath;
+    process.env.GATE_ROSTER_PATH = rosterPath;
+    process.env.GATE_AUDIT_PATH = auditPath;
+    process.env.GATE_ROOT = root;
     const plugin = await GatePlugin({});
     let threw = null;
     try {
@@ -80,6 +86,7 @@ try {
     }
     check('抛错', threw instanceof Error, String(threw));
     check('错误信息带门禁口径', /门禁拦截/.test(threw?.message ?? ''), threw?.message ?? '');
+    process.env = savedEnv;
 
     let ok = true;
     try {
