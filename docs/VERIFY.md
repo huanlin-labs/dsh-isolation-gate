@@ -8,6 +8,7 @@
 | opencode 1.18.29 | 进程内插件 | ✅ ~/.config/opencode/opencode.json | ✅ 插件加载 + deny 夹具拦截 | ⏳ 需模型凭据（户主） |
 | pi 1.4.0 | 扩展 tool_call | ✅ ~/.pi/agent/extensions | ✅ 拦截 / 放行 / 字段容错 | ⏳ 需模型凭据（户主） |
 | Gemini CLI 0.65.0 | BeforeTool 钩子 | ✅ ~/.gemini/settings.json | ✅ 载荷测试 | ⏳ 需 Google 登录（户主） |
+| Cursor / Windsurf | MCP 工具 | ✅ ~/.cursor/mcp.json（gate-setup mcp） | ⚠️ advisory：无钩子，不能硬拦 | ⏳ 未装客户端 |
 | Codex CLI 0.164.0 | MCP 工具 | ✅ ~/.codex/config.toml | ⚠️ advisory：Codex 无前置钩子，**不能硬拦** | ⏳ |
 
 > 结论口径：**“配置已接线 + 适配器已验证”不等于“端到端拦过一次真实模型调用”**。后者需要各家的登录态，属于户主账号范畴。
