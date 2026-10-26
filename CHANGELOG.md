@@ -1,3 +1,10 @@
+## 1.10.0 — 2026-10-26
+
+**给没有前端的 harness 补一个设置页**：ZCode / opencode / pi / Claude Code 的用户原本只能改 JSON，没法"设分组、禁谁"。
+
+- 新增 `gate ui` / `npx dsh-isolation-gate ui`：本机 127.0.0.1 页面，列出对象与分组，一键切「禁 / 只读 / 可读写删」，可新增/移出对象、整组切档。
+- 与 dsh 面板共用同一份状态文件；写操作带一次性 token，只监听本机。
+- 新增 12 条 UI 测试；HTTP 接口在无 token 时返回 403。
 ## 1.9.2 — 2026-10-26
 
 ZCode 真机核对（3.16.3）：配置路径 `~/.zcode/cli/config.json` 确认，`hooks.enabled: true` 必需；PreToolUse 返回协议 `hookSpecificOutput.permissionDecision` 与适配器逐字一致；项目级 hooks 当前版本被忽略，配置在 session 启动时快照。补 docs/ZCODE.md 真机结论。另：opencode 适配器测试改为夹具隔离（不再依赖本机真实门禁状态）。

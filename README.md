@@ -361,3 +361,16 @@ MIT · 见 [LICENSE](./LICENSE)。
 **点一下右上角的 ⭐ Star**。它不会改变代码，但会让更多人在搜索 `dsh plugin` 时看到它。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
+## 没有前端的 harness 怎么设（ZCode / opencode / pi / Claude Code）
+
+dsh 用户有「门禁」面板；**其它 harness 没有**。所以带了一个本机设置页：
+
+```bash
+npx dsh-isolation-gate ui        # 打开 http://127.0.0.1:19390/
+```
+
+- 能看到名单里的对象、分组，一键切换 **禁 / 只读 / 可读写删**；
+- 能新增对象（名字如 `Zcode`，或绝对路径如 `D:\secret`，默认「禁」）、移出名单；
+- 能整组切档；只监听 127.0.0.1，写操作需页面内一次性 token；
+- 写的是同一份状态文件（`D:\.agents\门禁-授权.json`），所以 **dsh 面板与其它 harness 共用一套策略**；
+- 改完要让对应 harness **新开会话**（ZCode 有 session 快照；其它同理拿最新状态）。

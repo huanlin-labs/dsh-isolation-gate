@@ -55,3 +55,7 @@ node D:/插件/dsh-isolation-gate/bin/gate-setup.mjs zcode --write  # 落盘（�
 - 配置快照在 **session 启动时**生成：改完配置要**新建会话**才生效。
 - 已实测：用真实 PreToolUse 载荷（含 camelCase + snake_case 双份字段）喂适配器，受管「禁」路径返回 deny JSON、名单外路径无输出、退出码 0。
 - 未跑完整会话循环：需要在 ZCode 里登录模型后新建会话验证（见 README 的验收步骤）。
+
+## 设置分组 / 禁谁
+
+ZCode 自身没有门禁前端。用 `npx dsh-isolation-gate ui` 打开本机设置页（与 dsh 面板同一份状态文件），选对象、点「禁」即可；改完**新建会话**生效。

@@ -409,6 +409,7 @@ function usage() {
       '  delete  --path P                        删**文件**（需 delete 权限；删前自动备份）',
       '  rmdir   --path P                        删**空目录**（需 delete 权限；不递归，非空则拒）',
       '  log     [--limit 20]                    审计日志',
+      '  ui      [--port 19390]                  本机设置页（给没有前端的 harness 用户）',
       '',
       '  级别：deny 禁（默认） / read 只读 / full 可读写删',
       '  退出码：0 放行 · 3 被拒 · 2 用错或环境错误',
@@ -425,6 +426,16 @@ function main() {
   if (!command || command === 'help' || options.help === true) return usage();
   const cfg = configFrom(options);
   switch (command) {
+    case 'ui': {
+      const port = typeof options.port === 'string' ? Number(options.port) : undefined;
+      import('./gate-ui.mjs')
+        .then((m) => m.startUi({ port }))
+        .catch((error) => {
+          process.stderr.write(`设置页启动失败：${error?.message ?? error}\n`);
+          process.exitCode = 2;
+        });
+      return 0;
+    }
     case 'status':
       return statusCommand(cfg, options);
     case 'policy':
