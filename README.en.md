@@ -5,6 +5,18 @@
 > who changed it, and how can the agent check it itself?" — **default-deny**, **roster-based**,
 > **group batch switching**, **auditable**, **agent-readable**.
 
+> ### ⚠️ Scope and disclaimer (read this first)
+>
+> The main target of this plugin is **DeepSeek Harness (DSH) on Windows** — that is what the author uses daily and the **only combination verified end-to-end on a real machine**. The host tool guard, the panel, the CLI and the audit log were all checked there.
+>
+> **Other harnesses** (Claude Code, ZCode, Gemini CLI, opencode, pi, MCP) and **other operating systems** (Linux, macOS) are **experimental**:
+> - the code and unit tests exist, and CI runs on all three platforms — but that does not mean it works in your setup;
+> - it may be incomplete, and it may break when the host tool changes;
+> - enforcement strength differs by host: some give a real pre-execution hook, others (MCP) can only advise. See the support matrix below.
+>
+> **Feedback, bug reports and PRs are welcome**: <https://github.com/huanlin-labs/dsh-isolation-gate/issues> .
+> I do not label anything "supported" that I have not verified — if it breaks for you, that is a gap here, not a mistake on your side.
+
 [中文 README](./README.md)
 
 ---
@@ -26,7 +38,7 @@ Changing a level is a UI action (`gate ui`, or the Gate panel inside DSH). The `
 
 | Check | Result |
 |---|---|
-| Local test suite | 15/15 suites pass |
+| Local test suite | 16/16 suites pass |
 | `npm run verify:install` | packs the repo, installs into an empty temp dir, then `doctor` 0/7 → `doctor --fix` 7/7 → re-check 7/7 |
 | CI | Ubuntu / macOS / Windows × Node 20 / 22 / 24 |
 | Author machine | `doctor` 7/7; the plugin is loaded via a profile `link:` to the repo; a real tool call was denied by it |

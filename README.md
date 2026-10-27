@@ -11,6 +11,18 @@
 
 **给 DeepSeek Harness（DSH）的隔离区授权台：默认禁、名单制、点一下生效、可审计、agent 自己能查。**
 
+> ### ⚠️ 定位与免责声明（先看这段）
+>
+> 这个插件的主战场是 **DeepSeek Harness（DSH）+ Windows** —— 那是作者每天在用、也是**唯一做过完整真机验证**的组合。DSH 里的宿主工具执行门、面板、CLI、审计，都是在这个组合下逐项验过的。
+>
+> **别的 harness**（Claude Code、ZCode、Gemini CLI、opencode、pi、MCP）和 **别的操作系统**（Linux、macOS）属于**实验性支持**：
+> - 有代码、有单测、CI 也在三平台上跑，但这不等于「在你那儿一定好用」；
+> - 可能不够完善，也可能因为对方版本一升级就失效；
+> - 各家的拦截强度也不一样 —— 有的能硬拦（前置钩子），有的只能"提示"（MCP），细节见下方支持矩阵。
+>
+> **欢迎提意见、报 bug、提 PR**：<https://github.com/huanlin-labs/dsh-isolation-gate/issues> 。
+> 没验证到的部分我不会写成「支持」；你遇到问题也不是你用错了，是本项目还没覆盖到。
+
 [安装](#安装) · [功能](#功能) · [它拦在哪一层](#它拦在哪一层) · [CLI](#命令行--agent-自查) · [English](./README.en.md) · [更新日志](./CHANGELOG.md)
 
 ```bash
