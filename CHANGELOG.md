@@ -1,3 +1,8 @@
+## 1.13.6 — 2026-10-27
+
+- **首屏加「定位与免责声明」**（中英双语）：主战场是 **DSH + Windows**，也是唯一做过完整真机验证的组合；其它 harness（Claude Code / ZCode / Gemini CLI / opencode / pi / MCP）与其它系统（Linux / macOS）属**实验性**，可能不完善、也可能随对方升级失效，欢迎提 issue / PR。纯文档版本，代码无改动。
+- 顺手修正英文 README 里过期的套件数（15/15 → 16/16）。
+
 ## 1.13.5 — 2026-10-26
 
 - `verify:install` 再多一步：装完后用**装上去的** `bin/gate.mjs --version` 核对版本，证明受管通道入口在真实安装后也能跑（CI 三平台）。
