@@ -22,7 +22,7 @@
 ---
 
 
-![30-second walkthrough: wiring 0/7 → 7/7, levels, a real denial, and the audit log](docs/brand/demo.gif)
+![30-second walkthrough: wiring 0/7 → 7/7, levels, a real denial, and the audit log](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/brand/demo.gif)
 
 ## Quick start (3 commands)
 
@@ -43,7 +43,7 @@ Changing a level is a UI action (`gate ui`, or the Gate panel inside DSH). The `
 | CI | Ubuntu / macOS / Windows × Node 20 / 22 / 24 |
 | Author machine | `doctor` 7/7; the plugin is loaded via a profile `link:` to the repo; a real tool call was denied by it |
 
-Per-harness status lives in [docs/VERIFY.md](docs/VERIFY.md); a one-page walkthrough with real captured output is in [docs/EXAMPLES.md](docs/EXAMPLES.md).
+Per-harness status lives in [docs/VERIFY.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/VERIFY.md); a one-page walkthrough with real captured output is in [docs/EXAMPLES.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/EXAMPLES.md).
 
 ## How it wires into each harness
 

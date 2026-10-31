@@ -1,6 +1,6 @@
 {
   "name": "dsh-isolation-gate",
-  "version": "1.13.6",
+  "version": "1.13.7",
   "description": "Access gate for AI coding harnesses (DSH plugin + Claude Code hook): per-directory deny/read/full, roster groups, audit log, model-facing tools with owner-approved widening.",
   "keywords": [
     "dsh",
@@ -61,8 +61,7 @@
     "README.md",
     "README.en.md",
     "CHANGELOG.md",
-    "LICENSE",
-    "docs"
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20.11"

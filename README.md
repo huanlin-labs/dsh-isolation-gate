@@ -1,4 +1,4 @@
-![Isolation Gate](docs/brand/banner.png)
+![Isolation Gate](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/brand/banner.png)
 
 # 门禁 · dsh-isolation-gate
 
@@ -32,9 +32,9 @@ dsh plugin --profile desktop add dsh-isolation-gate
 > ⭐ **如果它帮你少踩一次坑，点个 Star 能让更多人找到它** —— 这是这个项目唯一的「传播预算」。
 > [![Star](https://img.shields.io/github/stars/huanlin-labs/dsh-isolation-gate?style=social)](https://github.com/huanlin-labs/dsh-isolation-gate)
 
-![30 秒走通：接线 0/7 → 7/7，授权、拦截、审计](docs/brand/demo.gif)
+![30 秒走通：接线 0/7 → 7/7，授权、拦截、审计](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/brand/demo.gif)
 
-![门禁总览](docs/screenshots/01-overview.png)
+![门禁总览](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/screenshots/01-overview.png)
 
 ---
 
@@ -113,12 +113,12 @@ dsh plugin --profile desktop add dsh-isolation-gate
 | harness | 状态 | 怎么接 |
 | --- | --- | --- |
 | DSH | ✅ 原生 | 装插件（本文其余部分） |
-| Claude Code | ✅ v1.3 起 | `PreToolUse` hook → `bin/gate-hook-claude.mjs`，见 [docs/CLAUDE-CODE.md](docs/CLAUDE-CODE.md) |
-| opencode | 🧪 v1.4 起（代码+单测通过，未真机验证） | `.opencode/plugins/gate.mjs` 或 `opencode.json` 的 `plugin`；见 [docs/OPENCODE.md](docs/OPENCODE.md) |
-| Gemini CLI | 🧪 v1.5 起（代码+单测通过，未真机验证） | `.gemini/settings.json` 的 `BeforeTool` → `bin/gate-hook-gemini.mjs`，见 [docs/GEMINI-CLI.md](docs/GEMINI-CLI.md) |
-| 任何支持 MCP 的 harness（Cursor / Windsurf / Codex / Claude Desktop …） | ⚠️ advisory（只能问，不能硬拦） | stdio MCP 服务器 `gate-mcp`，见 [docs/MCP.md](docs/MCP.md) |
-| Codex CLI | 🧪 钩子能力随版本变（先自检再接线） | 通用适配器 `gate-hook-generic`，见 [docs/CODEX.md](docs/CODEX.md) |
-| 任何「stdin JSON + 退出码」钩子 | ✅ v1.7 起通用 | `gate-hook-generic`（`GATE_DENY_STYLE` 可选 exit2 / json-claude / json-gemini / text），见 [docs/GENERIC-HOOK.md](docs/GENERIC-HOOK.md) | 有工具前置钩子的，照上面两个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
+| Claude Code | ✅ v1.3 起 | `PreToolUse` hook → `bin/gate-hook-claude.mjs`，见 [docs/CLAUDE-CODE.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/CLAUDE-CODE.md) |
+| opencode | 🧪 v1.4 起（代码+单测通过，未真机验证） | `.opencode/plugins/gate.mjs` 或 `opencode.json` 的 `plugin`；见 [docs/OPENCODE.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/OPENCODE.md) |
+| Gemini CLI | 🧪 v1.5 起（代码+单测通过，未真机验证） | `.gemini/settings.json` 的 `BeforeTool` → `bin/gate-hook-gemini.mjs`，见 [docs/GEMINI-CLI.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/GEMINI-CLI.md) |
+| 任何支持 MCP 的 harness（Cursor / Windsurf / Codex / Claude Desktop …） | ⚠️ advisory（只能问，不能硬拦） | stdio MCP 服务器 `gate-mcp`，见 [docs/MCP.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/MCP.md) |
+| Codex CLI | 🧪 钩子能力随版本变（先自检再接线） | 通用适配器 `gate-hook-generic`，见 [docs/CODEX.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/CODEX.md) |
+| 任何「stdin JSON + 退出码」钩子 | ✅ v1.7 起通用 | `gate-hook-generic`（`GATE_DENY_STYLE` 可选 exit2 / json-claude / json-gemini / text），见 [docs/GENERIC-HOOK.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/GENERIC-HOOK.md) | 有工具前置钩子的，照上面两个适配器写一层；只有 MCP 的只能做事前询问，不能硬拦 |
 
 **共用同一份策略**：名单 / 级别 / 审计默认都在 `.agents` 那三个文件里，DSH 面板里改完，Claude Code 下一次工具调用立刻按新级别判。
 所有判定都写审计（`channel: hook/claude-code`），所以"谁在什么时候试图碰哪个目录"两边一本账。
@@ -377,7 +377,7 @@ MIT · 见 [LICENSE](./LICENSE)。
 [![Star History Chart](https://api.star-history.com/svg?repos=huanlin-labs/dsh-isolation-gate&type=Date)](https://star-history.com/#huanlin-labs/dsh-isolation-gate&Date)
 ## 五分钟走通（真实输出）
 
-不想读长文：[一页就够](docs/EXAMPLES.md) —— 装、接线、三档权限、拦截文案、排错三连，全是实测输出。
+不想读长文：[一页就够](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/EXAMPLES.md) —— 装、接线、三档权限、拦截文案、排错三连，全是实测输出。
 
 ## 已验证（不是自吹）
 
@@ -386,7 +386,7 @@ MIT · 见 [LICENSE](./LICENSE)。
 
 ## 三分钟上手（中文）
 
-见 [docs/QUICKSTART.zh.md](docs/QUICKSTART.zh.md)，或直接：`npx dsh-isolation-gate doctor` 看接线状态。
+见 [docs/QUICKSTART.zh.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/QUICKSTART.zh.md)，或直接：`npx dsh-isolation-gate doctor` 看接线状态。
 
 ## 没有前端的 harness 怎么设（ZCode / opencode / pi / Claude Code）
 
@@ -402,7 +402,7 @@ npx dsh-isolation-gate ui        # 打开 http://127.0.0.1:19390/
 - 写的是同一份状态文件（`D:\.agents\门禁-授权.json`），所以 **dsh 面板与其它 harness 共用一套策略**；
 - 改完要让对应 harness **新开会话**（ZCode 有 session 快照；其它同理拿最新状态）。
 
-## 支持矩阵（真实验证状态见 [docs/VERIFY.md](docs/VERIFY.md)）
+## 支持矩阵（真实验证状态见 [docs/VERIFY.md](https://raw.githubusercontent.com/huanlin-labs/dsh-isolation-gate/main/docs/VERIFY.md)）
 
 | harness | 拦法 | 硬拦？ |
 |---|---|---|
