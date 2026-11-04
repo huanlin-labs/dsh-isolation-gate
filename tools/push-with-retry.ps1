@@ -15,7 +15,7 @@ param(
 )
 
 $ErrorActionPreference = 'Continue'
-function Git { param([string[]]$Args) & git -c http.sslVerify=false -c http.proxy= -c https.proxy= @Args 2>&1 }
+function Git { param([string[]]$Args) & git @Args 2>&1 }
 
 $transient = 'RPC failed|unexpected disconnect|Connection reset|Could not resolve host|Failed to connect|early EOF|HTTP 5\d\d|timed out'
 $fatal     = 'HTTP 403|403 Forbidden|Permission denied|Authentication failed|not authorized|could not read Username'
