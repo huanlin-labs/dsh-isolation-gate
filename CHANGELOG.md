@@ -1,4 +1,4 @@
-## 未发布（D 段）
+## 1.13.9 — 2026-11-04
 
 - **新增 `gate grant <名字> --for 30m [--level full]`（临时授权，D-1）**：把某个受管对象临时调到指定级别，**到期自动回落到授权前的级别**——不需要任何后台进程，靠读取时惰性判定（`expiresAt` + `baseLevel` 存在状态文件里）。配套 `gate grant --list`（看剩多少分钟）与 `gate grant <名字> --revoke`（立刻撤销）。手改级别（`set`）会清掉临时授权，避免"以为撤了其实还挂着"。
 - 新增回归套件 `test/run-grant.mjs`（14 项断言：非法时长、授权期内放行、到期自动拒、撤销回原级、无授权时撤销报错），全量 **19/19 套件通过**。
@@ -314,3 +314,4 @@ ZCode 真机核对（3.16.3）：配置路径 `~/.zcode/cli/config.json` 确认�
 - 审计页新增「清空审计」：清空前整份备份到 `D:\回收站\isolation-gate-audit\access-log-<时间>.jsonl`，再截断原文件；新增 `POST /__dsh-isolation-gate/audit/clear`
 
 - 修：`POST /audit/clear` 缺 `clearAudit` 导入（运行时 ReferenceError → 400）；前端改用 `post()` 正确序列化 body
+

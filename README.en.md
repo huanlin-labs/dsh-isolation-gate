@@ -200,6 +200,10 @@ node bin/gate.mjs write  --path "<drive-root>\Zcode\some-file" --text "content"
 node bin/gate.mjs delete --path "<drive-root>\Zcode\some-file"   # backed up to the recycle bin first
 node bin/gate.mjs rmdir  --path "<drive-root>\Zcode\empty-dir"   # empty directories only, never recursive
 node bin/gate.mjs log    --limit 20
+node bin/gate.mjs stats  --days 7             # audit stats (allow/deny · objects · ops · per day)
+node bin/gate.mjs grant  --name Zcode --for 30m --level read   # temporary grant, auto-reverts
+node bin/gate.mjs grant  --list               # remaining time of temporary grants
+node bin/gate.mjs set    --path "<drive-root>\Zcode\public" --level read  # per-subdirectory level (overrides parent)
 ```
 
 **Exit codes**: `0` allowed / success · `3` denied (reason on stderr) · `2` usage or environment error.

@@ -242,6 +242,10 @@ node bin/gate.mjs write  --path "<drive-root>\Zcode\某文件" --text "内容"
 node bin/gate.mjs delete --path "<drive-root>\Zcode\某文件"   # 删前自动备份到回收站
 node bin/gate.mjs rmdir  --path "<drive-root>\Zcode\空目录"   # 只删空目录（不递归）
 node bin/gate.mjs log    --limit 20
+node bin/gate.mjs stats  --days 7             # 审计统计（放行/拒绝 · 对象 · 操作 · 按天）
+node bin/gate.mjs grant  --name Zcode --for 30m --level read   # 临时授权：到期自动回原级别
+node bin/gate.mjs grant  --list               # 看临时授权还剩多久
+node bin/gate.mjs set    --path "<drive-root>\Zcode\公开" --level read  # 子目录单独设级（覆盖父目录）
 ```
 
 **退出码**：`0` 放行 / 成功 · `3` 被拒（拒绝文案在 stderr）· `2` 用错或环境错误。
@@ -347,7 +351,9 @@ MIT · 见 [LICENSE](./LICENSE)。
 - [ ] 30 秒演示 GIF（欢迎贡献：录你自己机器上的演示；我们不录，整屏会带出无关窗口）
 - [ ] **认知帷幕**：受管路径的读取不直接回原文，只回字段摘要或打码内容（群友提的方向；比目录权限更接近「少看一点」）
 - [ ] `gate export --csv`：把审计日志导出成表格
-- [ ] 临时授权：给某对象一个到期时间，到点自动回到 `deny`
+- [x] 临时授权：给某对象一个到期时间，到点自动回到原级别（`gate grant --for`）
+- [x] 子目录粒度：受管路径下按子目录单独设级别（`gate set --path`）
+- [x] `gate stats`：审计统计（放行/拒绝 · 对象 · 操作 · 按天）
 - [ ] 状态文件并发锁（多窗口同时改不互相覆盖）
 - [ ] 拒绝原因解释器：告诉模型「是哪条规则、哪段路径命中的」
 
