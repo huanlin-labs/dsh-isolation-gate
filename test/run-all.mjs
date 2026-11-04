@@ -31,6 +31,7 @@ const suites = [
   ['本机设置页（gate ui：只读接口 / token / 改级别 / 加减对象）', join(import.meta.dirname, 'run-ui.mjs')],
   ['接线体检（doctor / --fix 全量接线）', join(import.meta.dirname, 'run-doctor.mjs')],
   ['CLI 契约（--version / -v）', join(import.meta.dirname, 'run-cli.mjs')],
+  ['fail-closed（名单缺失 ⇒ 一律拒绝 / 不受管不误伤）', join(import.meta.dirname, 'run-failclosed.mjs')],
 ];
 
 const results = [];
