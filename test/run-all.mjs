@@ -35,6 +35,7 @@ const suites = [
   ['临时授权（grant --for 到期回落 / 撤销 / 非法时长）', join(import.meta.dirname, 'run-grant.mjs')],
   ['审计统计（stats 计数 / 时间窗 / 只读不改文件）', join(import.meta.dirname, 'run-stats.mjs')],
   ['可操作拒绝提示（禁/只读/名单不可用都给下一步）', join(import.meta.dirname, 'run-deny-hint.mjs')],
+  ['子目录粒度（父只读 / 子目录单独设级 / 收紧）', join(import.meta.dirname, 'run-subdir.mjs')],
 ];
 
 const results = [];

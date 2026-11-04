@@ -32,7 +32,7 @@ import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rm
 import { dirname, join, relative, resolve } from 'node:path';
 
 import { appendAudit, readAudit, statsAudit } from '../lib/audit.js';
-import { buildReport, check, grantLevel, levelInfo, listGrants, normalizeConfig, revokeGrant } from '../lib/service.js';
+import { buildReport, check, editRoster, grantLevel, levelInfo, listGrants, normalizeConfig, revokeGrant, setLevel } from '../lib/service.js';
 import { readRoster } from '../lib/roster.js';
 import { readState } from '../lib/store.js';
 
@@ -425,6 +425,44 @@ function grantCommand(cfg, options) {
   return 0;
 }
 
+function setCommand(cfg, options) {
+  const level = typeof options.level === 'string' ? options.level : '';
+  const target = typeof options.path === 'string' ? options.path : options.name;
+  if (!target) {
+    process.stderr.write('set 需要 --path 或 --name\n');
+    return 2;
+  }
+  if (level === '') {
+    process.stderr.write('set 需要 --level deny|read|full\n');
+    return 2;
+  }
+  if (!['deny', 'read', 'full'].includes(level)) {
+    process.stderr.write(`--level 只接受 deny / read / full，收到：${level}\n`);
+    return 2;
+  }
+  // 先确保它在名单里：带路径的对象只有进了名单才受管辖（最长前缀命中）。
+  const added = editRoster(cfg, { action: 'add', name: target, key: target });
+  if (!added.ok && added.duplicate !== true) {
+    process.stderr.write(`${added.error}\n`);
+    return 2;
+  }
+  const result = setLevel(cfg, { name: target, level, by: 'cli-set' });
+  if (!result.ok) {
+    process.stderr.write(`${result.error}\n`);
+    return 2;
+  }
+  if (options.json === true) {
+    emit(options, result, `${result.name} → ${result.level}`);
+    return 0;
+  }
+  process.stdout.write(
+    `已设置：${result.name} → ${result.level}（${result.levelLabel}）` +
+      `${added.duplicate === true ? '' : ' · 已加入名单（先 deny 后设级）'}\n` +
+      `规则：按路径段最长前缀命中；子目录单独设级别会覆盖父目录（同级不叠加）。\n`,
+  );
+  return 0;
+}
+
 function statsCommand(cfg, options) {
   const days = typeof options.days === 'string' ? Number.parseInt(options.days, 10) : 0;
   const top = typeof options.top === 'string' ? Number.parseInt(options.top, 10) : 10;
@@ -502,6 +540,7 @@ function usage() {
       '  delete  --path P                        删**文件**（需 delete 权限；删前自动备份）',
       '  rmdir   --path P                        删**空目录**（需 delete 权限；不递归，非空则拒）',
       '  log     [--limit 20]                    审计日志',
+      '  set     --path P --level read|full|deny  给某个目录/名字单独设级别（子目录覆盖父目录）',
       '  stats   [--days 7] [--top 10]           审计统计（放行/拒绝 · 对象 · 操作 · 按天）',
       '  grant   --name X --for 30m [--level full]  临时授权（到期自动回到原级别）',
       '  grant   --list                          看当前临时授权',
@@ -575,6 +614,8 @@ const { positional, options } = parseArgs(argv0);
         return 2;
       }
       return rmdirCommand(cfg, options);
+    case 'set':
+      return setCommand(cfg, options);
     case 'stats':
       return statsCommand(cfg, options);
     case 'grant':
@@ -588,3 +629,4 @@ const { positional, options } = parseArgs(argv0);
 }
 
 process.exitCode = main();
+
