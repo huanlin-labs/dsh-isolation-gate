@@ -32,6 +32,7 @@ const suites = [
   ['接线体检（doctor / --fix 全量接线）', join(import.meta.dirname, 'run-doctor.mjs')],
   ['CLI 契约（--version / -v）', join(import.meta.dirname, 'run-cli.mjs')],
   ['fail-closed（名单缺失 ⇒ 一律拒绝 / 不受管不误伤）', join(import.meta.dirname, 'run-failclosed.mjs')],
+  ['临时授权（grant --for 到期回落 / 撤销 / 非法时长）', join(import.meta.dirname, 'run-grant.mjs')],
 ];
 
 const results = [];

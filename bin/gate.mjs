@@ -32,7 +32,7 @@ import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rm
 import { dirname, join, relative, resolve } from 'node:path';
 
 import { appendAudit, readAudit } from '../lib/audit.js';
-import { buildReport, check, levelInfo, normalizeConfig } from '../lib/service.js';
+import { buildReport, check, grantLevel, levelInfo, listGrants, normalizeConfig, revokeGrant } from '../lib/service.js';
 import { readRoster } from '../lib/roster.js';
 import { readState } from '../lib/store.js';
 
@@ -377,6 +377,54 @@ function rmdirCommand(cfg, options) {
   return 0;
 }
 
+function grantCommand(cfg, options) {
+  if (options.list === true) {
+    const result = listGrants(cfg);
+    if (options.json === true) emit(options, result, '');
+    else if (result.grants.length === 0) process.stdout.write('（没有临时授权）\n');
+    else {
+      process.stdout.write('临时授权：\n');
+      for (const g of result.grants) {
+        const mins = g.remainingMs === null ? '-' : `${Math.ceil(g.remainingMs / 60000)} 分钟`;
+        process.stdout.write(
+          `  ${g.name} → ${g.level}（${g.levelLabel}）· 剩 ${mins} · 到期回 ${g.baseLevel}${g.expired ? '（已过期）' : ''}\n`,
+        );
+      }
+    }
+    return 0;
+  }
+  const name = typeof options.name === 'string' ? options.name : typeof options.path === 'string' ? options.path : null;
+  if (!name) {
+    process.stderr.write('grant 需要 --name <名字|路径>\n');
+    return 2;
+  }
+  if (options.revoke === true) {
+    const result = revokeGrant(cfg, { name });
+    if (!result.ok) {
+      process.stderr.write(`${result.error}\n`);
+      return 2;
+    }
+    emit(options, result, `已撤销临时授权：${result.name} 回到 ${result.level}（${result.levelLabel}）`);
+    return 0;
+  }
+  const result = grantLevel(cfg, {
+    name,
+    level: typeof options.level === 'string' ? options.level : 'full',
+    for: options.for,
+    by: 'cli',
+  });
+  if (!result.ok) {
+    process.stderr.write(`${result.error}\n`);
+    return 2;
+  }
+  emit(
+    options,
+    result,
+    `已临时授权：${result.name} → ${result.level}（${result.levelLabel}）· ${Math.round(result.forMs / 60000)} 分钟后（${result.expiresAt}）自动回到 ${result.before}`,
+  );
+  return 0;
+}
+
 function logCommand(cfg, options) {
   const limit = Number.parseInt(String(options.limit ?? '20'), 10);
   const result = readAudit(cfg.auditPath, Number.isInteger(limit) && limit > 0 ? limit : 20);
@@ -409,6 +457,8 @@ function usage() {
       '  delete  --path P                        删**文件**（需 delete 权限；删前自动备份）',
       '  rmdir   --path P                        删**空目录**（需 delete 权限；不递归，非空则拒）',
       '  log     [--limit 20]                    审计日志',
+      '  grant   --name X --for 30m [--level full]  临时授权（到期自动回到原级别）',
+      '  grant   --list                          看当前临时授权',
       '  ui      [--port 19390]                  本机设置页（给没有前端的 harness 用户）',
       '',
       '  级别：deny 禁（默认） / read 只读 / full 可读写删',
@@ -479,6 +529,8 @@ const { positional, options } = parseArgs(argv0);
         return 2;
       }
       return rmdirCommand(cfg, options);
+    case 'grant':
+      return grantCommand(cfg, options);
     case 'log':
       return logCommand(cfg, options);
     default:
