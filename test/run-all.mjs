@@ -34,6 +34,7 @@ const suites = [
   ['fail-closed（名单缺失 ⇒ 一律拒绝 / 不受管不误伤）', join(import.meta.dirname, 'run-failclosed.mjs')],
   ['临时授权（grant --for 到期回落 / 撤销 / 非法时长）', join(import.meta.dirname, 'run-grant.mjs')],
   ['审计统计（stats 计数 / 时间窗 / 只读不改文件）', join(import.meta.dirname, 'run-stats.mjs')],
+  ['可操作拒绝提示（禁/只读/名单不可用都给下一步）', join(import.meta.dirname, 'run-deny-hint.mjs')],
 ];
 
 const results = [];
