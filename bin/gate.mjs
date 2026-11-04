@@ -31,7 +31,7 @@
 import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rmdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 
-import { appendAudit, readAudit } from '../lib/audit.js';
+import { appendAudit, readAudit, statsAudit } from '../lib/audit.js';
 import { buildReport, check, grantLevel, levelInfo, listGrants, normalizeConfig, revokeGrant } from '../lib/service.js';
 import { readRoster } from '../lib/roster.js';
 import { readState } from '../lib/store.js';
@@ -425,6 +425,51 @@ function grantCommand(cfg, options) {
   return 0;
 }
 
+function statsCommand(cfg, options) {
+  const days = typeof options.days === 'string' ? Number.parseInt(options.days, 10) : 0;
+  const top = typeof options.top === 'string' ? Number.parseInt(options.top, 10) : 10;
+  const result = statsAudit(cfg.auditPath, {
+    days: Number.isInteger(days) ? days : 0,
+    top: Number.isInteger(top) ? top : 10,
+  });
+  if (!result.ok) {
+    process.stderr.write(`${result.error}\n`);
+    return 2;
+  }
+  if (options.json === true) {
+    emit(options, result, '');
+    return 0;
+  }
+  const scope = result.days > 0 ? `最近 ${result.days} 天` : '全部';
+  if (result.total === 0) {
+    process.stdout.write(`审计统计（${scope}）：没有记录（${result.path}）\n`);
+    return 0;
+  }
+  const pct = (n) => `${Math.round((n / result.total) * 100)}%`;
+  const lines = [];
+  lines.push(`审计统计（${scope}；${result.path}）`);
+  lines.push(`  共 ${result.total} 条 · 放行 ${result.counts.allowed} · 拒绝 ${result.counts.denied}（拒绝率 ${pct(result.counts.denied)}）`);
+  if (result.counts.firstAt) lines.push(`  时间范围：${result.counts.firstAt} → ${result.counts.lastAt}`);
+  if (result.counts.byName.length > 0) {
+    lines.push('  最常被碰的对象：');
+    for (const row of result.counts.byName) lines.push(`    ${row.name} · ${row.count} 次（拒 ${row.denied}）`);
+  }
+  if (result.counts.byOp.length > 0) {
+    lines.push('  操作分布：');
+    for (const row of result.counts.byOp) lines.push(`    ${row.op} · ${row.count} 次（拒 ${row.denied}）`);
+  }
+  if (result.counts.byChannel.length > 0) {
+    lines.push('  通道分布：');
+    for (const row of result.counts.byChannel) lines.push(`    ${row.channel} · ${row.count} 次`);
+  }
+  if (result.counts.byDay.length > 0) {
+    lines.push('  按天：');
+    for (const row of result.counts.byDay) lines.push(`    ${row.day} · ${row.count} 次`);
+  }
+  process.stdout.write(`${lines.join('\n')}\n`);
+  return 0;
+}
+
 function logCommand(cfg, options) {
   const limit = Number.parseInt(String(options.limit ?? '20'), 10);
   const result = readAudit(cfg.auditPath, Number.isInteger(limit) && limit > 0 ? limit : 20);
@@ -457,6 +502,7 @@ function usage() {
       '  delete  --path P                        删**文件**（需 delete 权限；删前自动备份）',
       '  rmdir   --path P                        删**空目录**（需 delete 权限；不递归，非空则拒）',
       '  log     [--limit 20]                    审计日志',
+      '  stats   [--days 7] [--top 10]           审计统计（放行/拒绝 · 对象 · 操作 · 按天）',
       '  grant   --name X --for 30m [--level full]  临时授权（到期自动回到原级别）',
       '  grant   --list                          看当前临时授权',
       '  ui      [--port 19390]                  本机设置页（给没有前端的 harness 用户）',
@@ -529,6 +575,8 @@ const { positional, options } = parseArgs(argv0);
         return 2;
       }
       return rmdirCommand(cfg, options);
+    case 'stats':
+      return statsCommand(cfg, options);
     case 'grant':
       return grantCommand(cfg, options);
     case 'log':
