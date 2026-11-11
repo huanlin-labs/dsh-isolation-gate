@@ -10,7 +10,7 @@
  *   · 交互接线：行级/组级切档、选目录、加入名单、归组、删组、清理孤儿键、移除确认。
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const reportDir = resolve(process.argv[2] ?? join(import.meta.dirname, 'out'));
@@ -315,6 +315,23 @@ check('纪律页脚写明"不读任何受管对象内部内容"', tree.flat.incl
 check('页脚写明 fail-closed', tree.flat.includes('一律拒绝'));
 check('根节点带 data-dsh-plugin=isolation-gate', tree.nodes[0]?.props?.['data-dsh-plugin'] === 'isolation-gate');
 check('受管对象行带 data-gate-object 便于皮肤定位', tree.nodes.some((node) => node.props?.['data-gate-object'] === 'Zcode'));
+
+// ---- 浅色主题可读性（issue #1：按钮文字与底色相同） ------------------------
+const allButtons = tree.nodes.filter((node) => node.type === 'button');
+const primaryBtn = allButtons.find((node) => node.props?.children === '选择文件夹…');
+check(
+  '主按钮：底色=brand-primary、文字=label-primary-foreground',
+  String(primaryBtn?.props?.style?.background).includes('--dsw-alias-brand-primary')
+    && String(primaryBtn?.props?.style?.color).includes('--dsw-alias-label-primary-foreground'),
+  `${primaryBtn?.props?.style?.background} / ${primaryBtn?.props?.style?.color}`,
+);
+check(
+  '任何按钮的文字色都不等于背景色',
+  allButtons.every((node) => node.props?.style?.color !== node.props?.style?.background),
+);
+const clientSource = readFileSync(new URL('../lib/client.js', import.meta.url), 'utf8');
+check('源码里没有把 #0b0e14 写死成按钮文字', !/color:\s*'#0b0e14'/.test(clientSource));
+check('等级色块按底色选深/浅字（LEVEL_ON 三档齐全）', /LEVEL_ON\s*=\s*\{\s*deny:\s*'#0b0e14',\s*read:\s*'#0b0e14',\s*full:\s*'#ffffff'/.test(clientSource));
 
 // ---- 交互接线 ------------------------------------------------------------
 const seg = tree.nodes.filter((node) => node.props?.['data-gate-segmented'] && typeof node.props.children === 'object');
