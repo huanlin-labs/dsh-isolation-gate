@@ -59,7 +59,17 @@ assert('总数 6', parsed?.total === 6, String(parsed?.total));
 assert('放行 2', parsed?.counts?.allowed === 2, String(parsed?.counts?.allowed));
 assert('拒绝 4', parsed?.counts?.denied === 4, String(parsed?.counts?.denied));
 assert('Alpha 记 2 次', parsed?.counts?.byName?.[0]?.count >= 2, JSON.stringify(parsed?.counts?.byName));
-assert('按天分 3 个桶', parsed?.counts?.byDay?.length === 3, JSON.stringify(parsed?.counts?.byDay));
+const expectedDays = new Set(
+  entries.map((e) => {
+    const d = new Date(e.at);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }),
+);
+assert(
+  `按本地日分 ${expectedDays.size} 个桶`,
+  parsed?.counts?.byDay?.length === expectedDays.size,
+  JSON.stringify(parsed?.counts?.byDay),
+);
 assert('通道数 3', parsed?.counts?.byChannel?.length === 3, JSON.stringify(parsed?.counts?.byChannel));
 
 // ② 最近 1 天：只剩 4 条（3 天前那两条被过滤）
