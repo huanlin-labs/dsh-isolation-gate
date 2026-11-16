@@ -114,6 +114,16 @@ check('段比较：D:\\a\\b **不**命中 D:\\a\\bc\\d（整段相等才认）',
 check('段比较：D:\\a 命中 D:\\A\\b（大小写不敏感）', isSegmentPrefix('D:\\a', 'D:\\A\\b') === true);
 check('段比较：更长的前缀不是"前缀"', isSegmentPrefix('D:\\a\\b\\c', 'D:\\a\\b') === false);
 
+// —— Win32 尾点 / 尾空格：系统会静默忽略，门禁必须按同一语义归一（否则可绕过名单）——
+if (process.platform === 'win32') {
+  check('尾点：D:\\Zcode. 归一成 D:\\Zcode', normalizePathKey('D:\\Zcode.') === 'D:\\Zcode', normalizePathKey('D:\\Zcode.'));
+  check('尾点：D:\\Zcode.\\x 里的段也归一', normalizePathKey('D:\\Zcode.\\x') === 'D:\\Zcode\\x', normalizePathKey('D:\\Zcode.\\x'));
+  check('尾空格：D:\\Zcode \\x 归一', normalizePathKey('D:\\Zcode \\x') === 'D:\\Zcode\\x', normalizePathKey('D:\\Zcode \\x'));
+  check('长路径前缀：\\\\?\\D:\\Zcode\\x 归一成普通路径', normalizePathKey('\\\\?\\D:\\Zcode\\x') === 'D:\\Zcode\\x', normalizePathKey('\\\\?\\D:\\Zcode\\x'));
+  check('盘根一级名：D:\\Zcode.\\x ⇒ Zcode', topSegmentOf('D:\\Zcode.\\x').top === 'Zcode', topSegmentOf('D:\\Zcode.\\x').top);
+  check('盘根一级名：D:\\Zcode \\x ⇒ Zcode', topSegmentOf('D:\\Zcode \\x').top === 'Zcode', topSegmentOf('D:\\Zcode \\x').top);
+}
+
 const pathObjects = [
   { kind: 'path', key: 'D:\\tmp\\p', raw: 'D:\\tmp\\p' },
   { kind: 'path', key: 'D:\\tmp\\p\\sub', raw: 'D:\\tmp\\p\\sub' },
